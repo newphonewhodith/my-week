@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>My Week</title>
+<!-- Home Screen app: opens full-screen (no browser bar) when added from Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="My Week">
+<meta name="application-name" content="My Week">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+
+<script>
+/* =====================================================================
+   MY CALENDAR DATA — edit this section to update your schedule
+   ===================================================================== */
+
+// The first week the calendar tracks (a Monday). "Past Weeks" starts here.
+const TRACKING_START = "2026-10-19";
+
+// Event categories → shades of pink (used for the legend too).
+//   bg = card tint, ac = accent shade
+const CATEGORIES = {
+  work:     { label: "Work calls",        bg: "#fbe6ee", ac: "#b8336a" },
+  focus:    { label: "Work time",         bg: "#fdf3f7", ac: "#eba3c0" },
+  gym:      { label: "Gym",               bg: "#fcebf2", ac: "#d4588a" },
+  wellness: { label: "Personal",          bg: "#fef7fa", ac: "#f4c4d6" },
+  social:   { label: "Social",            bg: "#fbe4ee", ac: "#e07aa3" },
+  church:   { label: "Church",            bg: "#f8e2eb", ac: "#9e2d5a" },
+  home:     { label: "Home & errands",    bg: "#fdf0f5", ac: "#e892b4" },
+  wedding:  { label: "Jillian's wedding", bg: "#f7dde8", ac: "#c4497c" },
+  football: { label: "Commanders",        bg: "#f4dbe5", ac: "#6e1d40" },
+};
+
+/* BASE WEEKLY SCHEDULE (repeats every week)
+   - Each version has a "from" date (a Monday). Past weeks always use the
+     version that was active then, so your history never changes.
+   - To change your routine: DON'T edit an old version — copy it, give the
+     new one a later "from" date, and edit the copy.
+   - Keep each event's "id" the same across versions: check-offs are saved by id.
+   - day: mon/tue/wed/thu/fri/sat/sun · times are 24h "HH:MM"
+   - allDay: true = no set time ("anytime") */
+const BASE_SCHEDULES = [
+  {
+    from: "2026-10-19",
+    events: [
+      // ── MONDAY ──
+      { id: "mon-walk",    day: "mon", start: "07:30", end: "08:15", title: "Morning walk", category: "wellness" },
+      { id: "mon-shower",  day: "mon", start: "08:30", end: "09:00", title: "Shower & get ready", category: "wellness" },
+      { id: "mon-logon",   day: "mon", start: "09:00", end: "09:30", title: "Coffee & log on", category: "focus" },
+      { id: "mon-geoff",   day: "mon", start: "10:00", end: "10:30", title: "Call with Geoff Clarke", category: "work" },
+      { id: "mon-jubala",  day: "mon", start: "10:45", end: "16:00", title: "Work from Jubala", category: "focus", location: "Jubala Coffee", notes: "Head home at 4:00" },
+      { id: "mon-heidi",   day: "mon", start: "14:00", end: "14:30", title: "AEO work with Heidi Dains", category: "work" },
+      { id: "mon-gym",     day: "mon", start: "17:00", end: "18:15", title: "Gym", category: "gym" },
+      { id: "mon-grocery", day: "mon", start: "18:30", end: "19:00", title: "Grocery run", category: "home" },
+      { id: "mon-dinner",  day: "mon", start: "19:00", end: "19:45", title: "Dinner", category: "home" },
+
+      // ── TUESDAY ──
+      { id: "tue-walk",        day: "tue", start: "07:30", end: "08:15", title: "Morning walk", category: "wellness" },
+      { id: "tue-logon",       day: "tue", start: "08:30", end: "08:45", title: "Coffee & log on", category: "focus" },
+      { id: "tue-ai-review",   day: "tue", start: "08:45", end: "09:00", title: "AI review with Geoff Clarke & Erik", category: "work" },
+      { id: "tue-shower",      day: "tue", start: "09:30", end: "10:00", title: "Shower & get ready", category: "wellness" },
+      { id: "tue-work",        day: "tue", start: "10:00", end: "12:00", title: "Work from home", category: "focus" },
+      { id: "tue-finance",     day: "tue", start: "12:00", end: "13:00", title: "MTG finance review with Karson & Eva", category: "work", notes: "Lunch meeting · 12 PM Eastern" },
+      { id: "tue-summermoon",  day: "tue", start: "13:00", end: "16:00", title: "Work from Summer Moon", category: "focus", location: "Summer Moon Coffee", notes: "Head home at 4:00" },
+      { id: "tue-chores",      day: "tue", start: "17:00", end: "18:15", title: "Chores, clean & dinner", category: "home" },
+      { id: "tue-smallgroup",  day: "tue", start: "18:30", end: "20:30", title: "Summit Church small group", category: "church", location: "Raleigh (address to add)" },
+
+      // ── WEDNESDAY ──
+      { id: "wed-walk",       day: "wed", start: "07:30", end: "08:15", title: "Morning walk", category: "wellness" },
+      { id: "wed-shower",     day: "wed", start: "08:30", end: "09:00", title: "Shower & get ready", category: "wellness" },
+      { id: "wed-logon",      day: "wed", start: "09:00", end: "09:30", title: "Coffee & log on", category: "focus" },
+      { id: "wed-heather",    day: "wed", start: "09:30", end: "11:00", title: "Projects review with Heather", category: "work" },
+      { id: "wed-work",       day: "wed", start: "11:00", end: "12:00", title: "Work from home", category: "focus" },
+      { id: "wed-therapy",    day: "wed", start: "12:00", end: "13:00", title: "Therapy", category: "wellness", location: "Virtual / online" },
+      { id: "wed-summermoon", day: "wed", start: "13:00", end: "16:00", title: "Work from Summer Moon", category: "focus", location: "Summer Moon Coffee", notes: "Head home at 4:00" },
+      { id: "wed-gym",        day: "wed", start: "17:00", end: "18:15", title: "Gym", category: "gym" },
+      { id: "wed-jill-caleb", day: "wed", start: "18:30", end: "21:00", title: "Hang with Jillian & Caleb", category: "social" },
+
+      // ── THURSDAY ──
+      { id: "thu-walk",       day: "thu", start: "07:30", end: "08:15", title: "Morning walk", category: "wellness" },
+      { id: "thu-shower",     day: "thu", start: "08:30", end: "09:00", title: "Shower & get ready", category: "wellness" },
+      { id: "thu-logon",      day: "thu", start: "09:00", end: "09:30", title: "Coffee & log on", category: "focus" },
+      { id: "thu-coffeeshop", day: "thu", start: "10:00", end: "16:00", title: "Coffee shop work session", category: "focus", notes: "Morning or afternoon, depending on calls. Home by 4:00" },
+      { id: "thu-heidi",      day: "thu", start: "14:00", end: "14:30", title: "AEO work with Heidi Dains", category: "work" },
+      { id: "thu-gym",        day: "thu", start: "17:00", end: "18:15", title: "Gym", category: "gym" },
+      { id: "thu-chill",      day: "thu", start: "19:00", end: "21:00", title: "Social or chill time", category: "social" },
+
+      // ── FRIDAY ──
+      { id: "fri-coffee",     day: "fri", start: "07:30", end: "08:00", title: "Coffee out", category: "wellness" },
+      { id: "fri-finance",    day: "fri", start: "08:00", end: "09:00", title: "MTG finance review with Karson & Eva", category: "work" },
+      { id: "fri-logon",      day: "fri", start: "09:00", end: "09:30", title: "Log on", category: "focus" },
+      { id: "fri-heather",    day: "fri", start: "09:30", end: "11:00", title: "Projects review with Heather", category: "work" },
+      { id: "fri-work",       day: "fri", start: "11:00", end: "12:00", title: "Work from home", category: "focus" },
+      { id: "fri-walk",       day: "fri", start: "12:00", end: "13:00", title: "Midday walk", category: "wellness" },
+      { id: "fri-coffeeshop", day: "fri", start: "13:00", end: "16:00", title: "Coffee shop work session", category: "focus" },
+      { id: "fri-gym",        day: "fri", start: "17:00", end: "18:15", title: "Gym", category: "gym" },
+      { id: "fri-laundry",    day: "fri", allDay: true, title: "Laundry", category: "home" },
+
+      // ── SUNDAY ──
+      { id: "sun-church",  day: "sun", start: "09:15", end: "10:45", title: "Church service", category: "church", location: "Summit Church · Capital Hills campus" },
+      { id: "sun-laundry", day: "sun", allDay: true, title: "Laundry", category: "home" },
+    ],
+  },
+];
+
+/* ONE-OFF EVENTS (specific dates, "YYYY-MM-DD")
+   - replaces: [ids] hides those base events on that date only
+   - cancel: true + replaces → just skips a base event that day */
+const ONE_OFF_EVENTS = [
+  // ── Week of Oct 19 ──
+  { id: "zinc-house", date: "2026-10-24", start: "19:00", end: "22:00", title: "Zinc House winery night", category: "social", location: "Zinc House, Wake Forest", notes: "With friends" },
+  { id: "jillian-bridal", date: "2026-10-25", start: "12:30", end: "18:00", title: "Help Jillian: bridal makeup, wedding decor & apartment decorating", category: "wedding", location: "Jillian's apartment · 1950 Grisdale Lane, Cary", notes: "Head to Cary after church" },
+
+  // ── Week of Oct 26 ──
+  { id: "blue-mountain-ram", date: "2026-10-29", start: "10:30", end: "11:00", title: "Blue Mountain Ram takeover play review", category: "work", notes: "With Geoff Clarke & John Powers · this week only" },
+  { id: "hair-makeup-trial", date: "2026-10-28", start: "18:30", end: "21:30", title: "Hair & makeup trial with the bridesmaids", category: "wedding", location: "1950 Grisdale Lane, Cary", replaces: ["wed-jill-caleb"] },
+  { id: "line-dancing", date: "2026-10-29", start: "19:15", end: "21:15", title: "Line dancing class", category: "social", location: "PBR Bar at Fenton, Cary", replaces: ["thu-chill"] },
+  { id: "apartment-crawl", date: "2026-10-30", start: "19:00", end: "22:00", title: "Halloween apartment crawl", category: "social", location: "1950 Grisdale Lane, Cary", notes: "Like a bar crawl, but every apartment is decorated differently" },
+  { id: "halloween", date: "2026-10-31", allDay: true, title: "Halloween out with friends", category: "social", location: "Downtown Cary", notes: "All-day plans with friends" },
+  { id: "christmas-decor", date: "2026-11-01", start: "12:00", end: "15:00", title: "Christmas decorating at home", category: "home", notes: "After church" },
+
+  // ── Week of Nov 2 (Jillian's wedding week) ──
+  { id: "jillian-tentative", date: "2026-11-04", start: "18:30", end: "21:30", title: "(Tentative) Help at Jillian's apartment", category: "wedding", location: "1950 Grisdale Lane, Cary", notes: "Wedding is Saturday", replaces: ["wed-jill-caleb"] },
+  { id: "jillian-help-thu", date: "2026-11-05", start: "17:00", end: "21:00", title: "Free to help Jillian", category: "wedding", notes: "Available anytime from 5 PM on", replaces: ["thu-gym", "thu-chill"] },
+  { id: "pto-rehearsal", date: "2026-11-06", allDay: true, title: "PTO · Jillian's rehearsal day", category: "wedding", replaces: ["fri-coffee", "fri-finance", "fri-logon", "fri-heather", "fri-work", "fri-coffeeshop"] },
+  { id: "breakfast-casserole", date: "2026-11-06", start: "08:00", end: "10:00", title: "Coffee + breakfast casserole for Jillian's family", category: "wedding", notes: "So rehearsal day goes smoothly" },
+  { id: "jillian-wedding", date: "2026-11-07", allDay: true, title: "Jillian's wedding day", category: "wedding" },
+
+  // ── Washington Commanders games (Eastern time) ──
+  { id: "cmd-eagles",    date: "2026-11-01", start: "20:20", end: "23:35", title: "Commanders vs Eagles", category: "football", notes: "Sunday Night Football · home" },
+  { id: "cmd-rams",      date: "2026-11-08", start: "13:00", end: "16:15", title: "Commanders vs Rams", category: "football", notes: "Home" },
+  { id: "cmd-giants",    date: "2026-11-12", start: "20:15", end: "23:30", title: "Commanders @ Giants", category: "football", notes: "Thursday Night Football" },
+  { id: "cmd-bengals",   date: "2026-11-23", start: "20:15", end: "23:30", title: "Commanders vs Bengals", category: "football", notes: "Monday Night Football · home" },
+  { id: "cmd-cardinals", date: "2026-11-29", start: "16:25", end: "19:40", title: "Commanders @ Cardinals", category: "football" },
+  { id: "cmd-titans",    date: "2026-12-06", start: "13:00", end: "16:15", title: "Commanders @ Titans", category: "football" },
+  { id: "cmd-texans",    date: "2026-12-13", start: "13:00", end: "16:15", title: "Commanders vs Texans", category: "football", notes: "Home" },
+  { id: "cmd-falcons",   date: "2026-12-20", start: "13:00", end: "16:15", title: "Commanders vs Falcons", category: "football", notes: "Home" },
+  { id: "cmd-vikings",   date: "2026-12-26", allDay: true, title: "Commanders @ Vikings", category: "football", notes: "Kickoff time TBD" },
+  { id: "cmd-jaguars",   date: "2027-01-02", allDay: true, title: "Commanders @ Jaguars", category: "football", notes: "Kickoff time TBD" },
+  { id: "cmd-cowboys",   date: "2027-01-10", allDay: true, title: "Commanders vs Cowboys (Week 18)", category: "football", notes: "Date & kickoff time TBD · home" },
+];
+
+/* TO-DO LIST — carries over week to week.
+   Items added here show up once; anything you add on the page is saved there.
+   Checked items stay (crossed out) until midnight, then disappear. */
+const STARTER_TODOS = [
+  { id: "wall-work-order", text: "Submit a work order for the hole in my wall" },
+  { id: "bathtub-crack",   text: "Fix the bathtub crack" },
+  { id: "casserole",       text: "Have the breakfast casserole ready for Friday, Nov 6" },
+];
+
+// GROCERY LIST — same idea: checked items clear at midnight.
+const STARTER_GROCERIES = [];
+/* ===================== end of calendar data ===================== */
+</script>
+
+<style>
+:root{
+  --rose:#c4497c;        /* main accent */
+  --rose-deep:#8f2a55;   /* headings & strong text */
+  --rose-soft:#f9e4ec;   /* soft fills */
+  --blush:#fdf6f9;       /* page background */
+  --ink:#3d1f2d;         /* body text */
+  --ink-soft:#8a6475;    /* secondary text */
+  --line:#f1dbe4;        /* hairlines */
+  --white:#ffffff;
+  --hour:56px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0; font-family:"DM Sans",system-ui,-apple-system,sans-serif; color:var(--ink); background:var(--blush); min-height:100vh;
+  -webkit-font-smoothing:antialiased}
+button{font:inherit; color:inherit}
+
+/* ---------- header ---------- */
+.hero{text-align:center; padding:calc(34px + env(safe-area-inset-top)) 16px 10px}
+.wrap{padding-left:max(16px, env(safe-area-inset-left)) !important; padding-right:max(16px, env(safe-area-inset-right)) !important}
+.brand{font-family:"Cormorant Garamond",Georgia,serif; font-style:italic; font-weight:500; font-size:clamp(2.4rem,10vw,3.4rem);
+  color:var(--rose-deep); margin:0; letter-spacing:.01em; line-height:1}
+.eyebrow{margin:0 0 6px; font-size:.7rem; font-weight:600; letter-spacing:.28em; text-transform:uppercase; color:var(--rose)}
+
+.topbar{position:sticky; top:0; z-index:30; display:flex; align-items:center; gap:10px;
+  padding:10px 16px; padding-top:max(10px, env(safe-area-inset-top));
+  background:rgba(255,255,255,.92); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line)}
+.week-title{flex:1; text-align:center; min-width:0}
+.week-title b{display:block; font-family:"Cormorant Garamond",Georgia,serif; font-weight:600; font-size:1.35rem; color:var(--rose-deep); white-space:nowrap; line-height:1.1}
+.week-title small{color:var(--ink-soft); font-weight:500; font-size:.68rem; letter-spacing:.18em; text-transform:uppercase}
+.round{width:40px; height:40px; border-radius:50%; border:1px solid var(--line); background:var(--white);
+  font-size:1.3rem; line-height:1; color:var(--rose); cursor:pointer; display:grid; place-items:center}
+.pill{border:1px solid var(--rose); border-radius:999px; padding:9px 16px; background:var(--white); color:var(--rose);
+  font-weight:600; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; white-space:nowrap}
+.pill.is-current{background:var(--rose); color:var(--white)}
+.round:active,.pill:active{transform:scale(.96)}
+
+.wrap{max-width:1480px; margin:0 auto; padding:0 16px}
+.layout{display:grid; gap:20px 20px; align-items:start; padding-bottom:10px}
+.main-col{min-width:0}
+.side{display:grid; gap:12px; margin-top:18px}
+@media (min-width:1100px){
+  .layout{grid-template-columns:minmax(0,1fr) 340px}
+  .main-col,.past-panel{grid-column:1}
+  .side{grid-column:2; grid-row:1 / span 2}
+  .side{position:sticky; top:84px; max-height:calc(100vh - 100px); overflow:auto; padding-bottom:4px}
+}
+
+.past-banner{margin:16px 0 0; display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between;
+  background:var(--white); border:1px solid var(--line); border-radius:14px; padding:10px 14px; font-weight:500; font-size:.88rem; color:var(--ink-soft)}
+.past-banner button{border:1px solid var(--rose); border-radius:999px; padding:7px 14px; background:var(--white); font-weight:600; font-size:.78rem; color:var(--rose); cursor:pointer}
+.past-banner[hidden]{display:none}
+.past-banner.editing{border-color:var(--rose); color:var(--rose-deep)}
+.past-banner.editing button{background:var(--rose); color:var(--white)}
+
+.progress{display:flex; align-items:center; gap:14px; margin:18px 0 6px; font-size:.82rem; font-weight:600; color:var(--rose-deep)}
+.bar{flex:1; height:4px; border-radius:99px; background:var(--rose-soft); overflow:hidden}
+.bar span{display:block; height:100%; width:0; border-radius:99px; background:var(--rose); transition:width .4s}
+
+.legend{display:flex; flex-wrap:wrap; gap:6px 16px; margin:14px 0 18px}
+.chip{display:inline-flex; align-items:center; gap:7px; font-size:.75rem; font-weight:500; color:var(--ink-soft)}
+.chip i{width:9px; height:9px; border-radius:50%; background:var(--ac)}
+
+/* ---------- list view (phones) ---------- */
+.day{background:var(--white); border-radius:18px; padding:16px 14px 14px; margin-bottom:12px; border:1px solid var(--line); scroll-margin-top:80px}
+.day.today{border-color:var(--rose); box-shadow:0 6px 24px rgba(196,73,124,.10)}
+.day-head{display:flex; align-items:baseline; gap:10px; padding:0 4px 6px; border-bottom:1px solid var(--line); margin-bottom:4px}
+.day-name{font-family:"Cormorant Garamond",Georgia,serif; font-weight:600; font-size:1.35rem; color:var(--rose-deep)}
+.day-date{color:var(--ink-soft); font-size:.85rem}
+.badge{background:var(--rose); color:var(--white); font-size:.62rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; padding:3px 9px; border-radius:99px; align-self:center}
+.day-count{margin-left:auto; font-size:.75rem; font-weight:500; color:var(--ink-soft)}
+.empty{color:var(--ink-soft); font-size:.88rem; padding:10px 4px 2px}
+
+.ev{display:grid; grid-template-columns:78px 1fr auto; gap:12px; align-items:center; margin-top:6px; padding:10px 10px 10px 12px;
+  border-radius:12px; background:var(--bg); border-left:3px solid var(--ac); cursor:pointer; transition:opacity .2s}
+.ev-time{font-weight:600; font-size:.76rem; line-height:1.3; color:var(--rose-deep); font-variant-numeric:tabular-nums}
+.ev-title{font-weight:600; font-size:.95rem; line-height:1.3}
+.ev-meta{font-size:.74rem; color:var(--ink-soft); margin-top:2px}
+.ev-meta .cat-name{letter-spacing:.08em; text-transform:uppercase; font-size:.64rem; font-weight:600}
+.ev.done{opacity:.5}
+.ev.done .ev-title{text-decoration:line-through; text-decoration-color:var(--rose)}
+.ev.now{box-shadow:0 0 0 1.5px var(--rose)}
+.now-tag{display:inline-block; font-size:.58rem; font-weight:700; letter-spacing:.14em; background:var(--rose); color:var(--white); padding:2px 7px; border-radius:99px; margin-left:6px; vertical-align:2px}
+.now-mark{display:flex; align-items:center; gap:10px; margin:10px 0 4px; color:var(--rose); font-weight:600; font-size:.68rem; letter-spacing:.14em; text-transform:uppercase}
+.now-mark::before,.now-mark::after{content:""; flex:1; height:1px; background:var(--rose)}
+
+/* checkbox — thin circle with a drawn checkmark */
+.check{display:grid; place-items:center; padding:4px; cursor:pointer}
+.check input, .gchk{appearance:none; -webkit-appearance:none; margin:0; width:24px; height:24px; border-radius:50%;
+  border:1.5px solid var(--rose); background:var(--white); position:relative; cursor:pointer; transition:background .15s}
+.check input:checked, .gchk:checked{background:var(--rose)}
+.check input:checked::after, .gchk:checked::after{content:""; position:absolute; left:50%; top:45%; width:5px; height:10px;
+  border:solid var(--white); border-width:0 2px 2px 0; transform:translate(-50%,-50%) rotate(45deg)}
+.check input:disabled, .gchk:disabled{cursor:not-allowed; opacity:.45}
+.check input:focus-visible, .gchk:focus-visible, .ev:focus-visible, .gev:focus-visible, .ad-ev:focus-visible{outline:2px solid var(--rose); outline-offset:2px}
+
+/* ---------- grid view (tablets & up) ---------- */
+.grid-view{display:none}
+@media (min-width:900px){
+  .list-view{display:none}
+  .grid-view{display:block}
+}
+.grid-card{background:var(--white); border-radius:20px; border:1px solid var(--line); padding:14px 12px}
+.g-row{display:grid; grid-template-columns:54px repeat(7, minmax(0,1fr)); gap:0 4px}
+.gh{text-align:center; padding:6px 4px 10px; border-radius:12px}
+.gh b{display:block; font-size:.66rem; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft)}
+.gh small{display:block; font-family:"Cormorant Garamond",Georgia,serif; font-weight:600; font-size:1.5rem; color:var(--rose-deep); line-height:1.1}
+.gh.today{background:var(--rose)}
+.gh.today b,.gh.today small{color:var(--white)}
+.allday{border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:6px 0}
+.allday .lbl{font-size:.6rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft); align-self:center; text-align:right; padding-right:6px}
+.adc{display:flex; flex-direction:column; gap:4px; min-width:0}
+.ad-ev{display:flex; align-items:center; gap:6px; border-radius:8px; padding:4px 6px; background:var(--bg); border-left:3px solid var(--ac);
+  font-size:.72rem; font-weight:600; cursor:pointer; min-width:0}
+.ad-ev span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1}
+.ad-ev.done span{text-decoration:line-through; opacity:.55}
+.g-body{margin-top:8px}
+.hours{position:relative}
+.hours div{position:absolute; right:6px; transform:translateY(-50%); font-size:.64rem; font-weight:500; color:var(--ink-soft); white-space:nowrap}
+.col{position:relative;
+  background-image:repeating-linear-gradient(to bottom, var(--line) 0, var(--line) 1px, transparent 1px, transparent var(--hour))}
+.col.today{background-color:#fef8fb}
+.gev{position:absolute; box-shadow:0 0 0 1px var(--white); border-radius:8px; padding:4px 5px 4px 7px; background:var(--bg); border-left:3px solid var(--ac);
+  font-size:.7rem; line-height:1.2; overflow:hidden; cursor:pointer}
+.gev .gchk, .ad-ev .gchk{width:16px; height:16px; border-width:1.25px; flex:none}
+.gev .gchk{float:right; margin:0 0 2px 3px}
+.gev .gchk:checked::after, .ad-ev .gchk:checked::after{width:3px; height:7px; border-width:0 1.5px 1.5px 0}
+.gev .gev-title{font-weight:600}
+.gev .gev-time{color:var(--ink-soft); font-size:.64rem; margin-top:1px}
+.gev.slim{padding:0 4px 0 6px; display:flex; align-items:center; gap:4px; font-size:.64rem}
+.gev.slim .gev-title{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1}
+.gev.slim .gchk{order:2; float:none; width:11px; height:11px; margin:0}
+.gev.slim .gchk:checked::after{width:2px; height:5px; border-width:0 1.25px 1.25px 0}
+.gev.done{opacity:.5}
+.gev.done .gev-title{text-decoration:line-through}
+.gev.now{box-shadow:0 0 0 1.5px var(--rose)}
+.now-line{position:absolute; left:-3px; right:0; height:1.5px; background:var(--rose); z-index:6; pointer-events:none}
+.now-line::before{content:""; position:absolute; left:-3px; top:-3px; width:7px; height:7px; border-radius:50%; background:var(--rose)}
+
+/* ---------- panels ---------- */
+.panels{display:grid; gap:12px; margin:20px 0 10px}
+.panel{background:var(--white); border-radius:18px; border:1px solid var(--line); padding:18px}
+.panel h2{font-family:"Cormorant Garamond",Georgia,serif; font-weight:600; font-size:1.45rem; color:var(--rose-deep); margin:0 0 10px}
+.panel-head{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:6px}
+.panel-head h2{margin:0}
+.panel-head small{font-size:.72rem; color:var(--ink-soft)}
+.items{list-style:none; margin:0; padding:0}
+.items li{display:flex; gap:10px; align-items:center; padding:9px 0; font-size:.92rem; border-bottom:1px solid var(--line)}
+.items li span{flex:1; min-width:0; overflow-wrap:anywhere; line-height:1.35}
+.items li.done span{text-decoration:line-through; text-decoration-color:var(--rose); color:var(--ink-soft)}
+.items .check{padding:0}
+.del{border:0; background:none; color:var(--ink-soft); font-size:1.15rem; line-height:1; width:28px; height:28px; border-radius:50%; cursor:pointer; flex:none}
+.del:hover,.del:focus-visible{background:var(--rose-soft); color:var(--rose); outline:none}
+.add{display:flex; gap:8px; margin-top:12px}
+.add input{flex:1; min-width:0; border:1px solid var(--line); border-radius:999px; padding:10px 14px; font:400 .92rem "DM Sans",sans-serif; color:var(--ink); background:var(--blush)}
+.add input:focus{outline:none; border-color:var(--rose)}
+.add button{border:1px solid var(--rose); background:var(--rose); color:var(--white); border-radius:999px; padding:0 16px; font-weight:600; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; cursor:pointer}
+.items .empty{padding:10px 2px; border:0}
+.signin{display:grid; gap:8px}
+.signin .hint{margin:0 0 4px}
+.signin input{border:1px solid var(--line); border-radius:999px; padding:10px 14px; font:400 .92rem "DM Sans",sans-serif; color:var(--ink); background:var(--blush)}
+.signin input:focus{outline:none; border-color:var(--rose)}
+.signin button{border:1px solid var(--rose); background:var(--rose); color:var(--white); border-radius:999px; padding:10px; font-weight:600; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; cursor:pointer}
+.signin .err{color:var(--rose-deep); margin:0}
+.signed-in{display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:.86rem; color:var(--ink-soft)}
+.signed-in span{overflow-wrap:anywhere}
+.signed-in button{border:1px solid var(--line); background:var(--white); color:var(--ink-soft); border-radius:999px; padding:7px 14px; font-size:.75rem; font-weight:600; cursor:pointer}
+.signin[hidden],.signed-in[hidden]{display:none}
+#syncState.bad{color:var(--rose-deep); font-weight:600}
+.past-list{list-style:none; margin:0; padding:0; display:grid; gap:6px}
+.past-list button{width:100%; display:flex; align-items:center; gap:12px; text-align:left; cursor:pointer;
+  background:var(--white); border:1px solid var(--line); border-radius:12px; padding:12px 14px}
+.past-list button.active{border-color:var(--rose)}
+.past-list .pw-range{font-family:"Cormorant Garamond",Georgia,serif; font-weight:600; font-size:1.1rem; color:var(--rose-deep); min-width:120px}
+.past-list .mini{flex:1; height:3px; border-radius:99px; background:var(--rose-soft); overflow:hidden}
+.past-list .mini span{display:block; height:100%; background:var(--rose)}
+.past-list .pw-score{font-size:.8rem; font-weight:500; color:var(--ink-soft); white-space:nowrap}
+.past-list .empty{padding:4px 2px}
+footer{height:calc(24px + env(safe-area-inset-bottom))}
+
+/* ---------- details sheet ---------- */
+.modal{position:fixed; inset:0; z-index:50; background:rgba(61,31,45,.28); display:flex; align-items:flex-end; justify-content:center}
+.modal[hidden]{display:none}
+.sheet{width:100%; max-width:460px; background:var(--white); border-radius:22px 22px 0 0; padding:24px 22px calc(22px + env(safe-area-inset-bottom));
+  box-shadow:0 -10px 40px rgba(143,42,85,.18); animation:up .2s ease-out}
+@media (min-width:600px){ .modal{align-items:center} .sheet{border-radius:22px} }
+@keyframes up{from{transform:translateY(24px); opacity:0}}
+@media (prefers-reduced-motion:reduce){ .sheet{animation:none} }
+.sheet .cat{display:inline-flex; align-items:center; gap:7px; font-size:.66rem; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--rose)}
+.sheet .cat i{width:9px; height:9px; border-radius:50%; background:var(--ac)}
+.sheet h3{font-family:"Cormorant Garamond",Georgia,serif; font-weight:600; font-size:1.7rem; color:var(--rose-deep); margin:8px 0 16px; line-height:1.15}
+.sheet dl{margin:0; display:grid; grid-template-columns:72px 1fr; gap:10px 8px; font-size:.92rem}
+.sheet dt{font-size:.64rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); padding-top:3px}
+.sheet dd{margin:0}
+.sheet a{color:var(--rose)}
+.sheet-actions{display:flex; gap:10px; margin-top:22px}
+.sheet-actions button{flex:1; border-radius:999px; padding:12px; font-weight:600; font-size:.82rem; letter-spacing:.06em; text-transform:uppercase; cursor:pointer}
+.btn-done{background:var(--rose); color:var(--white); border:1px solid var(--rose)}
+.btn-done.is-done{background:var(--white); color:var(--rose)}
+.btn-done:disabled{opacity:.45; cursor:not-allowed}
+.btn-close{background:var(--white); color:var(--ink-soft); border:1px solid var(--line)}
+.lock-note{font-size:.76rem; color:var(--ink-soft); margin:12px 0 0; text-align:center}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <p class="eyebrow">Weekly planner</p>
+  <h1 class="brand">My Week</h1>
+</header>
+
+<div class="topbar">
+  <button class="round" id="prevBtn" aria-label="Previous week">‹</button>
+  <div class="week-title"><b id="weekLabel"></b><small id="weekSub"></small></div>
+  <button class="pill" id="todayBtn">Today</button>
+  <button class="round" id="nextBtn" aria-label="Next week">›</button>
+</div>
+
+<div class="wrap layout">
+ <div class="main-col">
+  <div class="past-banner" id="pastBanner" hidden>
+    <span id="pastBannerText">Past week · view only</span>
+    <button id="editBtn">Fix a check-off</button>
+  </div>
+
+  <div class="progress"><div class="bar"><span id="progressFill"></span></div><span id="progressText"></span></div>
+  <div class="legend" id="legend"></div>
+
+  <main>
+    <section class="list-view" id="listView" aria-label="Day by day"></section>
+    <section class="grid-view" id="gridView" aria-label="Week view"></section>
+  </main>
+
+ </div>
+
+ <aside class="side">
+  <section class="panel">
+    <div class="panel-head"><h2>To-do</h2><small id="todosCount"></small></div>
+    <ul class="items" id="todosList"></ul>
+    <form class="add" data-add="todos"><input type="text" placeholder="Add a to-do…" aria-label="Add a to-do" enterkeyhint="done"><button type="submit">Add</button></form>
+  </section>
+  <section class="panel">
+    <div class="panel-head"><h2>Grocery list</h2><small id="groceriesCount"></small></div>
+    <ul class="items" id="groceriesList"></ul>
+    <form class="add" data-add="groceries"><input type="text" placeholder="Add an item…" aria-label="Add a grocery item" enterkeyhint="done"><button type="submit">Add</button></form>
+  </section>
+  <section class="panel" id="syncPanel" hidden>
+    <div class="panel-head"><h2>Sync</h2><small id="syncState"></small></div>
+    <form id="signInForm" class="signin">
+      <p class="hint">Sign in once on each device to share your check-offs and lists.</p>
+      <input type="email" id="syncEmail" placeholder="Email" autocomplete="username" autocapitalize="off" required>
+      <input type="password" id="syncPass" placeholder="Password" autocomplete="current-password" required>
+      <button type="submit">Sign in</button>
+      <p class="hint err" id="syncErr"></p>
+    </form>
+    <div id="signedIn" class="signed-in" hidden>
+      <span id="syncWho"></span>
+      <button type="button" id="signOutBtn">Sign out</button>
+    </div>
+  </section>
+ </aside>
+
+ <section class="panel past-panel">
+   <h2>Past weeks</h2>
+   <ul class="past-list" id="pastList"></ul>
+ </section>
+</div>
+
+<footer></footer>
+
+<div class="modal" id="modal" hidden>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div>
+</div>
+
+<script>
+/* =====================================================================
+   SAVE / LOAD — the ONLY place that touches storage.
+   Everything is saved on this device first (localStorage), then synced
+   to Supabase when SYNC is filled in and you're signed in, so your
+   iPhone and iPad share the same check-offs and lists.
+   ===================================================================== */
+// Cloud sync settings (from Supabase → Project Settings → API). Leave blank to stay device-only.
+const SYNC = {
+  url: "https://fomuxeimdbgyagqgbajp.supabase.co",
+  key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZvbXV4ZWltZGJneWFncWdiYWpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4NDU4MjcsImV4cCI6MjEwODQyMTgyN30.60z03z3_2tGsRklSSOXE7ljBCPBqwpZM_niA9F29EGo",   // anon key (safe to be public)
+};
+
+const Store = (() => {
+  const PREFIX = "myweek:v1:";
+  const AUTH = "myweek:auth", PENDING = "myweek:pending", MERGED = "myweek:merged:";
+  const cache = {};
+  const ls = {
+    get(k) { try { const v = localStorage.getItem(k); return v == null ? null : JSON.parse(v); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+    del(k) { try { localStorage.removeItem(k); } catch (e) {} },
+  };
+  const enabled = () => !!(SYNC.url && SYNC.key);
+  let session = ls.get(AUTH);
+  let pending = new Set(ls.get(PENDING) || []);
+  let onChange = () => {}, onStatus = () => {};
+  let status = { state: !enabled() ? "off" : session ? "synced" : "signedout", msg: "" };
+  const setStatus = (state, msg = "") => { status = { state, msg }; onStatus(status); };
+  const savePending = () => ls.set(PENDING, [...pending]);
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+  // ---- this device ----
+  function loadLocal() {
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith(PREFIX)) {
+          try { cache[k.slice(PREFIX.length)] = JSON.parse(localStorage.getItem(k)); } catch (e) {}
+        }
+      }
+    } catch (e) { /* storage blocked — run from memory */ }
+  }
+  const saveLocal = (key, value) => ls.set(PREFIX + key, value);
+
+  // ---- Supabase (plain fetch, no libraries) ----
+  async function auth(grant, body) {
+    const r = await fetch(`${SYNC.url}/auth/v1/token?grant_type=${grant}`, {
+      method: "POST", headers: { apikey: SYNC.key, "Content-Type": "application/json" }, body: JSON.stringify(body),
+    });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      if (grant === "refresh_token") { session = null; ls.del(AUTH); throw new Error("signedout"); }
+      throw new Error(j.error_description || j.msg || j.message || "Sign-in failed");
+    }
+    session = { access: j.access_token, refresh: j.refresh_token, exp: Date.now() + (j.expires_in || 3600) * 1000, user: j.user && j.user.id, email: j.user && j.user.email };
+    ls.set(AUTH, session);
+  }
+  async function api(path, opts = {}, retry = true) {
+    if (!session) throw new Error("signedout");
+    if (Date.now() > session.exp - 60000) await auth("refresh_token", { refresh_token: session.refresh });
+    const r = await fetch(`${SYNC.url}/rest/v1/${path}`, {
+      ...opts, headers: { apikey: SYNC.key, Authorization: `Bearer ${session.access}`, "Content-Type": "application/json", ...(opts.headers || {}) },
+    });
+    if (r.status === 401 && retry) { session.exp = 0; return api(path, opts, false); }
+    if (!r.ok) throw new Error("Sync error (" + r.status + ")");
+    return r;
+  }
+  // Combine two versions of the same saved item (used once, the first time a device signs in).
+  function mergeValues(cloud, local) {
+    if (Array.isArray(cloud) && Array.isArray(local)) {
+      const objs = arr => arr.every(x => x && typeof x === "object" && "id" in x);
+      if (objs(cloud) && objs(local)) {
+        const map = new Map(cloud.map(x => [x.id, x]));
+        for (const x of local) { const c = map.get(x.id); if (!c || (x.done && !c.done)) map.set(x.id, x); }
+        return [...map.values()];
+      }
+      return [...new Set([...cloud, ...local])];
+    }
+    if (cloud && local && typeof cloud === "object" && typeof local === "object") return { ...cloud, ...local };
+    return local ?? cloud;
+  }
+
+  let running = null, again = false;
+  async function sync() {
+    if (!enabled() || !session) return;
+    if (running) { again = true; return running; }
+    running = (async () => {
+      setStatus("syncing");
+      try {
+        const first = !ls.get(MERGED + session.user);
+        const rows = await (await api("kv?select=key,value")).json();
+        const inCloud = new Set();
+        let changed = false;
+        for (const { key, value } of rows) {
+          inCloud.add(key);
+          let v = value;
+          if (first && key in cache) { v = mergeValues(value, cache[key]); if (!same(v, value)) pending.add(key); }
+          else if (pending.has(key)) continue;           // unsent change on this device wins
+          if (!same(cache[key], v)) { cache[key] = v; saveLocal(key, v); changed = true; }
+        }
+        if (first) { for (const k of Object.keys(cache)) if (!inCloud.has(k)) pending.add(k); ls.set(MERGED + session.user, true); }
+        savePending();
+        if (pending.size) {
+          const keys = [...pending];
+          await api("kv?on_conflict=user_id,key", {
+            method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+            body: JSON.stringify(keys.map(k => ({ key: k, value: cache[k] ?? null, updated_at: new Date().toISOString() }))),
+          });
+          keys.forEach(k => pending.delete(k)); savePending();
+        }
+        setStatus("synced");
+        if (changed) onChange();
+      } catch (e) {
+        if (e.message === "signedout") setStatus("signedout", "Please sign in again.");
+        else if (e instanceof TypeError || !navigator.onLine) setStatus("offline");
+        else setStatus("error", e.message);
+      } finally {
+        running = null;
+        if (again) { again = false; setTimeout(sync, 50); }
+      }
+    })();
+    return running;
+  }
+  let pushTimer;
+  function persist(key, value) {
+    saveLocal(key, value);
+    pending.add(key); savePending();
+    clearTimeout(pushTimer); pushTimer = setTimeout(sync, 500);
+  }
+
+  const get = (k, fallback) => (k in cache ? cache[k] : fallback);
+  const set = (k, v) => { cache[k] = v; persist(k, v); };
+  const toggle = (k, id, on) => { const m = { ...get(k, {}) }; if (on) m[id] = true; else delete m[id]; set(k, m); };
+
+  return {
+    async init() {
+      loadLocal();
+      if (enabled()) {
+        sync();
+        document.addEventListener("visibilitychange", () => { if (!document.hidden) sync(); });
+        window.addEventListener("online", sync);
+        setInterval(() => { if (!document.hidden) sync(); }, 60000);
+      }
+    },
+    getChecks: date => get("checks:" + date, {}),          // { eventId: true } for that date
+    setCheck: (date, id, on) => toggle("checks:" + date, id, on),
+    // Running lists (to-do, groceries): [{ id, text, done: "YYYY-MM-DD" | null }]
+    getList: name => get("list:" + name, []),
+    setList: (name, items) => set("list:" + name, items),
+    getSeeded: name => get("seeded:" + name, []),
+    setSeeded: (name, ids) => set("seeded:" + name, ids),
+    // sync controls
+    syncEnabled: enabled,
+    status: () => status,
+    email: () => (session && session.email) || "",
+    onChange: fn => (onChange = fn),
+    onStatus: fn => (onStatus = fn),
+    async signIn(email, password) { await auth("password", { email, password }); setStatus("syncing"); await sync(); },
+    signOut() { session = null; ls.del(AUTH); setStatus("signedout"); },
+  };
+})();
+
+/* ===================== helpers ===================== */
+const $ = s => document.querySelector(s);
+const pad = n => String(n).padStart(2, "0");
+const keyOf = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parseKey = k => { const [y, m, d] = k.split("-").map(Number); return new Date(y, m - 1, d); };
+const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+const mondayOf = d => addDays(d, -((d.getDay() + 6) % 7));
+const DAY_KEYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+const DAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const toMin = t => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+function fmtTime(t, withSuffix = true) {
+  let [h, m] = t.split(":").map(Number);
+  const ap = h % 24 >= 12 ? "PM" : "AM";
+  h = h % 12 || 12;
+  return withSuffix ? `${h}:${pad(m)} ${ap}` : `${h}:${pad(m)}`;
+}
+function fmtRange(e) {
+  if (e.allDay) return "All day";
+  const same = (toMin(e.start) < 720) === (toMin(e.end) < 720);
+  return `${fmtTime(e.start, !same)} – ${fmtTime(e.end)}`;
+}
+function weekLabel(mon) {
+  const sun = addDays(mon, 6);
+  return mon.getMonth() === sun.getMonth()
+    ? `${MONTHS[mon.getMonth()]} ${mon.getDate()}–${sun.getDate()}`
+    : `${MONTHS[mon.getMonth()]} ${mon.getDate()} – ${MONTHS[sun.getMonth()]} ${sun.getDate()}`;
+}
+const catOf = e => CATEGORIES[e.category] || { label: e.category, bg: "#fdf3f7", ac: "#d98aaa" };
+const catStyle = e => { const c = catOf(e); return `--bg:${c.bg};--ac:${c.ac}`; };
+const nowLabel = () => fmtTime(`${Math.floor(nowMin / 60)}:${pad(nowMin % 60)}`);
+
+/* ===================== schedule logic ===================== */
+function scheduleForWeek(weekKey) {
+  let pick = null;
+  for (const s of BASE_SCHEDULES) if (s.from <= weekKey && (!pick || s.from > pick.from)) pick = s;
+  return pick;
+}
+function eventsForDate(key) {
+  const d = parseKey(key);
+  const sched = scheduleForWeek(keyOf(mondayOf(d)));
+  const dk = DAY_KEYS[(d.getDay() + 6) % 7];
+  const oneOffs = ONE_OFF_EVENTS.filter(e => e.date === key);
+  const hidden = new Set(oneOffs.flatMap(e => e.replaces || []));
+  const base = (sched ? sched.events : []).filter(e => e.day === dk && !hidden.has(e.id));
+  return [...base, ...oneOffs.filter(e => !e.cancel)]
+    .map(e => ({ ...e, date: key }))
+    .sort((a, b) => (a.allDay === b.allDay ? 0 : a.allDay ? -1 : 1) || (a.allDay ? 0 : toMin(a.start) - toMin(b.start)));
+}
+function weekStats(monKey) {
+  let total = 0, done = 0;
+  const mon = parseKey(monKey);
+  for (let i = 0; i < 7; i++) {
+    const key = keyOf(addDays(mon, i));
+    const checks = Store.getChecks(key);
+    const evs = eventsForDate(key);
+    total += evs.length;
+    done += evs.filter(e => checks[e.id]).length;
+  }
+  return { total, done };
+}
+
+/* ===================== state ===================== */
+let viewMonday = mondayOf(new Date());
+let editMode = false;
+let todayKey = keyOf(new Date());
+let nowMin = 0;
+let openEvent = null;
+
+const currentMonKey = () => keyOf(mondayOf(new Date()));
+const viewKey = () => keyOf(viewMonday);
+const isPastWeek = () => viewKey() < currentMonKey();
+const locked = () => isPastWeek() && !editMode;
+const isNow = e => e.date === todayKey && !e.allDay && nowMin >= toMin(e.start) && nowMin < toMin(e.end);
+
+/* ===================== rendering ===================== */
+function checkbox(e, done, cls) {
+  const box = `<input type="checkbox" ${cls ? `class="${cls}"` : ""} data-check data-key="${e.date}" data-id="${esc(e.id)}"
+    ${done ? "checked" : ""} ${locked() ? "disabled" : ""} aria-label="Mark ${esc(e.title)} done">`;
+  return cls ? box : `<label class="check">${box}</label>`;
+}
+
+function renderList(days) {
+  $("#listView").innerHTML = days.map(({ d, key, events, checks }, i) => {
+    const isToday = key === todayKey;
+    const doneCount = events.filter(e => checks[e.id]).length;
+    let rows = "", nowPlaced = !isToday;
+    for (const e of events) {
+      if (!nowPlaced && !e.allDay && toMin(e.start) > nowMin) {
+        rows += `<div class="now-mark">Now · ${nowLabel()}</div>`;
+        nowPlaced = true;
+      }
+      const done = !!checks[e.id];
+      const meta = [`<span class="cat-name">${esc(catOf(e).label)}</span>`, e.location ? esc(e.location) : ""].filter(Boolean).join(" · ");
+      rows += `<div class="ev ${done ? "done" : ""} ${isNow(e) ? "now" : ""}" style="${catStyle(e)}"
+          data-open data-key="${key}" data-id="${esc(e.id)}" role="button" tabindex="0">
+        <div class="ev-time">${fmtRange(e)}</div>
+        <div><div class="ev-title">${esc(e.title)}${isNow(e) ? '<span class="now-tag">NOW</span>' : ""}</div>
+          <div class="ev-meta">${meta}</div></div>
+        ${checkbox(e, done)}
+      </div>`;
+    }
+    if (!nowPlaced && events.length) rows += `<div class="now-mark">Now · ${nowLabel()}</div>`;
+    if (!events.length) rows = `<div class="empty">Nothing scheduled</div>`;
+    return `<article class="day ${isToday ? "today" : ""}" id="day-${key}">
+      <div class="day-head"><span class="day-name">${DAY_NAMES[i]}</span><span class="day-date">${MONTHS[d.getMonth()]} ${d.getDate()}</span>
+        ${isToday ? '<span class="badge">Today</span>' : ""}
+        ${events.length ? `<span class="day-count">${doneCount} of ${events.length}</span>` : ""}</div>
+      ${rows}</article>`;
+  }).join("");
+}
+
+function layoutDay(events) {
+  // Long blocks (2h+) sit full-width in the background; shorter events
+  // layered on top get the right-hand side so they stay readable.
+  const items = events.filter(e => !e.allDay)
+    .map(e => ({ e, s: toMin(e.start), en: Math.max(toMin(e.end), toMin(e.start) + 15) }))
+    .sort((a, b) => a.s - b.s || b.en - a.en);
+  const bg = items.filter(it => toMin(it.e.end) - it.s >= 120);
+  const fg = items.filter(it => !bg.includes(it));
+  const overlaps = (a, b) => a.s < b.en && b.s < a.en;
+  const clusters = []; let cur = [], curEnd = -1;
+  for (const it of bg) { it.lane = 0; it.lanes = 1; it.left = 0; it.width = 100; it.z = 1; }
+  // background blocks that overlap each other still split side by side
+  for (const it of bg) {
+    const clash = bg.filter(o => o !== it && overlaps(o, it));
+    if (clash.length) { const grp = [it, ...clash].sort((a, b) => a.s - b.s); const i = grp.indexOf(it); it.width = 100 / grp.length; it.left = i * it.width; }
+  }
+  for (const it of fg) {
+    if (cur.length && it.s >= curEnd) { clusters.push(cur); cur = []; curEnd = -1; }
+    cur.push(it); curEnd = Math.max(curEnd, it.en);
+  }
+  if (cur.length) clusters.push(cur);
+  for (const c of clusters) {
+    const lanes = [];
+    for (const it of c) {
+      let i = lanes.findIndex(end => end <= it.s);
+      if (i < 0) { i = lanes.length; lanes.push(0); }
+      lanes[i] = it.en; it.lane = i;
+    }
+    const onBg = c.some(it => bg.some(b => overlaps(b, it)));
+    const start = onBg ? 34 : 0, span = 100 - start;
+    c.forEach(it => { it.lanes = lanes.length; it.width = span / lanes.length; it.left = start + it.lane * it.width; it.z = 2; });
+  }
+  return items;
+}
+
+function renderGrid(days) {
+  const HOUR = 56;
+  const timed = days.flatMap(x => x.events.filter(e => !e.allDay));
+  let startH = 7, endH = 22;
+  for (const e of timed) { startH = Math.min(startH, Math.floor(toMin(e.start) / 60)); endH = Math.max(endH, Math.ceil(toMin(e.end) / 60)); }
+  endH = Math.min(endH, 24);
+  const height = (endH - startH) * HOUR;
+  const y = m => ((m - startH * 60) / 60) * HOUR;
+
+  const heads = days.map(({ d, key }, i) =>
+    `<div class="gh ${key === todayKey ? "today" : ""}"><b>${DAY_NAMES[i].slice(0, 3)}</b><small>${d.getDate()}</small></div>`).join("");
+
+  const hasAllDay = days.some(x => x.events.some(e => e.allDay));
+  const allDay = hasAllDay ? `<div class="g-row allday"><div class="lbl">All day</div>${days.map(({ events, checks }) =>
+    `<div class="adc">${events.filter(e => e.allDay).map(e => `<div class="ad-ev ${checks[e.id] ? "done" : ""}" style="${catStyle(e)}" data-open data-key="${e.date}" data-id="${esc(e.id)}" role="button" tabindex="0">
+      ${checkbox(e, !!checks[e.id], "gchk")}<span>${esc(e.title)}</span></div>`).join("")}</div>`).join("")}</div>` : "";
+
+  let hours = "";
+  for (let h = startH + 1; h < endH; h++) hours += `<div style="top:${(h - startH) * HOUR}px">${fmtTime(`${h}:00`).replace(":00", "")}</div>`;
+
+  const cols = days.map(({ key, events, checks }) => {
+    const blocks = layoutDay(events).map(({ e, s, en, left, width, z }) => {
+      const h = Math.max((en - s) / 60 * HOUR, 13) - 1;
+      const done = !!checks[e.id];
+      return `<div class="gev ${h < 26 ? "slim" : ""} ${done ? "done" : ""} ${isNow(e) ? "now" : ""}" style="${catStyle(e)};top:${y(s) + 1}px;height:${h}px;left:${left}%;width:calc(${width}% - 3px);z-index:${z}"
+        data-open data-key="${key}" data-id="${esc(e.id)}" role="button" tabindex="0" title="${esc(e.title)} · ${fmtRange(e)}">
+        ${checkbox(e, done, "gchk")}<div class="gev-title">${esc(e.title)}</div>${h > 40 ? `<div class="gev-time">${fmtRange(e)}</div>` : ""}</div>`;
+    }).join("");
+    const nowLine = key === todayKey && nowMin >= startH * 60 && nowMin <= endH * 60 ? `<div class="now-line" style="top:${y(nowMin)}px"></div>` : "";
+    return `<div class="col ${key === todayKey ? "today" : ""}" style="height:${height}px">${blocks}${nowLine}</div>`;
+  }).join("");
+
+  $("#gridView").innerHTML = `<div class="grid-card" style="--hour:${HOUR}px">
+    <div class="g-row"><div></div>${heads}</div>${allDay}
+    <div class="g-row g-body"><div class="hours" style="height:${height}px">${hours}</div>${cols}</div></div>`;
+}
+
+function renderPast() {
+  const cur = currentMonKey(), weeks = [];
+  for (let m = mondayOf(parseKey(TRACKING_START)); keyOf(m) < cur; m = addDays(m, 7)) weeks.push(keyOf(m));
+  if (!weeks.length) { $("#pastList").innerHTML = `<li class="empty">Your first past week will appear here next Monday.</li>`; return; }
+  $("#pastList").innerHTML = weeks.reverse().map(wk => {
+    const { total, done } = weekStats(wk);
+    const pct = total ? Math.round(done / total * 100) : 0;
+    return `<li><button data-week="${wk}" class="${wk === viewKey() ? "active" : ""}">
+      <span class="pw-range">${weekLabel(parseKey(wk))}</span><span class="mini"><span style="width:${pct}%"></span></span>
+      <span class="pw-score">${done}/${total} done</span></button></li>`;
+  }).join("");
+}
+
+/* Running lists: carry over every week. A checked item keeps its
+   check-off date and is cleared once that day has passed. */
+const LISTS = {
+  todos:     { seed: () => STARTER_TODOS,     empty: "All caught up." },
+  groceries: { seed: () => STARTER_GROCERIES, empty: "Your list is empty." },
+};
+function loadList(name) {
+  let items = Store.getList(name).slice();
+  const seeded = new Set(Store.getSeeded(name));
+  const fresh = LISTS[name].seed().filter(t => !seeded.has(t.id));
+  if (fresh.length) {
+    items = items.concat(fresh.map(t => ({ id: t.id, text: t.text, done: null })));
+    Store.setSeeded(name, [...seeded, ...fresh.map(t => t.id)]);
+  }
+  const kept = items.filter(t => !t.done || t.done >= todayKey);   // clear items checked on an earlier day
+  if (fresh.length || kept.length !== items.length) Store.setList(name, kept);
+  return kept;
+}
+function renderLists() {
+  for (const name of Object.keys(LISTS)) {
+    const items = loadList(name);
+    const sorted = [...items.filter(t => !t.done), ...items.filter(t => t.done)];
+    const open = items.filter(t => !t.done).length;
+    $("#" + name + "List").innerHTML = sorted.length ? sorted.map(t => `<li class="${t.done ? "done" : ""}">
+      <label class="check"><input type="checkbox" data-list="${name}" data-id="${esc(t.id)}" ${t.done ? "checked" : ""} aria-label="${esc(t.text)}"></label>
+      <span>${esc(t.text)}</span>
+      <button class="del" data-del="${name}" data-id="${esc(t.id)}" aria-label="Remove ${esc(t.text)}">×</button></li>`).join("")
+      : `<li class="empty">${LISTS[name].empty}</li>`;
+    $("#" + name + "Count").textContent = open ? `${open} left` : "";
+  }
+}
+function updateList(name, fn) { Store.setList(name, fn(Store.getList(name).slice())); renderLists(); }
+
+function render() {
+  const now = new Date();
+  todayKey = keyOf(now);
+  nowMin = now.getHours() * 60 + now.getMinutes();
+  const wk = viewKey(), cur = currentMonKey();
+
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const d = addDays(viewMonday, i), key = keyOf(d);
+    return { d, key, events: eventsForDate(key), checks: Store.getChecks(key) };
+  });
+
+  $("#weekLabel").textContent = weekLabel(viewMonday);
+  $("#weekSub").textContent = wk === cur ? "This week" : wk < cur ? "Past week" : "Upcoming";
+  $("#todayBtn").classList.toggle("is-current", wk === cur);
+  const banner = $("#pastBanner");
+  banner.hidden = !isPastWeek();
+  banner.classList.toggle("editing", editMode);
+  $("#pastBannerText").textContent = editMode ? "Editing a past week" : "Past week · view only";
+  $("#editBtn").textContent = editMode ? "Done" : "Fix a check-off";
+
+  const { total, done } = weekStats(wk);
+  $("#progressFill").style.width = (total ? done / total * 100 : 0) + "%";
+  $("#progressText").textContent = `${done}/${total} done`;
+
+  renderList(days);
+  renderGrid(days);
+  renderPast();
+  if (openEvent) fillSheet();
+}
+function renderAll() { render(); renderLists(); }
+
+$("#legend").innerHTML = Object.values(CATEGORIES)
+  .map(c => `<span class="chip" style="--ac:${c.ac}"><i></i>${esc(c.label)}</span>`).join("");
+
+/* ===================== details sheet ===================== */
+function fillSheet() {
+  const { key, id } = openEvent;
+  const e = eventsForDate(key).find(x => x.id === id);
+  if (!e) return closeSheet();
+  const d = parseKey(key), c = catOf(e), done = !!Store.getChecks(key)[id];
+  const sheet = $("#sheet");
+  sheet.style.cssText = catStyle(e);
+  sheet.innerHTML = `
+    <span class="cat"><i></i>${esc(c.label)}</span>
+    <h3 id="sheetTitle">${esc(e.title)}</h3>
+    <dl>
+      <dt>Date</dt><dd>${DAY_NAMES[(d.getDay() + 6) % 7]}, ${MONTHS[d.getMonth()]} ${d.getDate()}</dd>
+      <dt>Time</dt><dd>${fmtRange(e)}</dd>
+      ${e.location ? `<dt>Where</dt><dd><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.location)}" target="_blank" rel="noopener">${esc(e.location)}</a></dd>` : ""}
+      ${e.notes ? `<dt>Notes</dt><dd>${esc(e.notes)}</dd>` : ""}
+    </dl>
+    <div class="sheet-actions">
+      <button class="btn-done ${done ? "is-done" : ""}" id="sheetDone" ${locked() ? "disabled" : ""}>${done ? "Undo" : "Mark done"}</button>
+      <button class="btn-close" id="sheetClose">Close</button>
+    </div>
+    ${locked() ? `<p class="lock-note">Past week — tap “Fix a check-off” to change this.</p>` : ""}`;
+  $("#sheetClose").onclick = closeSheet;
+  $("#sheetDone").onclick = () => {
+    if (locked()) return;
+    Store.setCheck(key, id, !done);
+    render();
+  };
+}
+function openSheet(key, id) { openEvent = { key, id }; fillSheet(); $("#modal").hidden = false; $("#sheetClose")?.focus(); }
+function closeSheet() { openEvent = null; $("#modal").hidden = true; }
+$("#modal").addEventListener("click", e => { if (e.target.id === "modal") closeSheet(); });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && openEvent) closeSheet();
+  if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-open]")) { e.preventDefault(); openSheet(e.target.dataset.key, e.target.dataset.id); }
+});
+
+/* ===================== events ===================== */
+document.addEventListener("change", e => {
+  const t = e.target;
+  if (t.matches("input[data-check]")) {
+    if (locked()) { t.checked = !t.checked; return; }
+    Store.setCheck(t.dataset.key, t.dataset.id, t.checked);
+    render();
+  } else if (t.matches("input[data-list]")) {
+    const on = t.checked, id = t.dataset.id;
+    updateList(t.dataset.list, items => items.map(x => x.id === id ? { ...x, done: on ? todayKey : null } : x));
+  }
+});
+document.addEventListener("click", e => {
+  if (e.target.closest("input, label.check")) return;
+  const card = e.target.closest("[data-open]");
+  if (card) return openSheet(card.dataset.key, card.dataset.id);
+  const del = e.target.closest("[data-del]");
+  if (del) { const id = del.dataset.id; return updateList(del.dataset.del, items => items.filter(x => x.id !== id)); }
+  const wkBtn = e.target.closest("[data-week]");
+  if (wkBtn) { goToWeek(parseKey(wkBtn.dataset.week)); window.scrollTo({ top: 0, behavior: "smooth" }); }
+});
+
+function goToWeek(mon) { viewMonday = mondayOf(mon); editMode = false; renderAll(); }
+$("#prevBtn").onclick = () => goToWeek(addDays(viewMonday, -7));
+$("#nextBtn").onclick = () => goToWeek(addDays(viewMonday, 7));
+$("#todayBtn").onclick = () => { goToWeek(new Date()); scrollToToday(); };
+$("#editBtn").onclick = () => { editMode = !editMode; renderAll(); };
+
+document.querySelectorAll("form[data-add]").forEach(form => form.addEventListener("submit", e => {
+  e.preventDefault();
+  const input = form.querySelector("input"), text = input.value.trim();
+  if (!text) return;
+  const id = "u" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  updateList(form.dataset.add, items => [...items, { id, text, done: null }]);
+  input.value = ""; input.focus();
+}));
+
+function scrollToToday() {
+  if (!window.matchMedia("(max-width: 899px)").matches) return;
+  setTimeout(() => document.getElementById("day-" + todayKey)?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
+}
+
+/* ===================== sync panel ===================== */
+const SYNC_TEXT = { off: "", signedout: "Not signed in", syncing: "Syncing…", synced: "Synced", offline: "Offline · will sync later", error: "Couldn't sync" };
+function renderSync() {
+  if (!Store.syncEnabled()) return;
+  const st = Store.status(), signedIn = !!Store.email() && st.state !== "signedout";
+  $("#syncPanel").hidden = false;
+  $("#syncState").textContent = SYNC_TEXT[st.state] || "";
+  $("#syncState").classList.toggle("bad", st.state === "error" || st.state === "signedout");
+  $("#signInForm").hidden = signedIn;
+  $("#signedIn").hidden = !signedIn;
+  $("#syncWho").textContent = Store.email();
+  if (st.msg) $("#syncErr").textContent = st.msg;
+}
+Store.onStatus(renderSync);
+Store.onChange(() => { render(); renderLists(); });
+$("#signInForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const btn = e.target.querySelector("button");
+  btn.disabled = true; btn.textContent = "Signing in…"; $("#syncErr").textContent = "";
+  try { await Store.signIn($("#syncEmail").value.trim(), $("#syncPass").value); $("#syncPass").value = ""; }
+  catch (err) { $("#syncErr").textContent = err instanceof TypeError ? "Can't reach the server — check your connection." : err.message; }
+  btn.disabled = false; btn.textContent = "Sign in";
+  renderSync();
+});
+$("#signOutBtn").onclick = () => { Store.signOut(); renderSync(); };
+
+/* ===================== start ===================== */
+renderSync();
+Store.init().then(() => {
+  renderAll();
+  scrollToToday();
+  let lastDay = todayKey;
+  setInterval(() => {            // keeps the "now" line and today highlight fresh
+    render();
+    if (todayKey !== lastDay) { lastDay = todayKey; renderLists(); }   // midnight: clear yesterday's checked items
+  }, 30000);
+});
+</script>
+</body>
+</html>

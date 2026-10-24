@@ -208,7 +208,7 @@ button{font:inherit; color:inherit}
 @media (min-width:1100px){
   .layout{grid-template-columns:minmax(0,1fr) 340px}
   .main-col,.past-panel{grid-column:1}
-  .side{grid-column:2; grid-row:1 / span 2}
+  .side{grid-column:2; grid-row:1 / span 2; position:static; max-height:none; overflow:visible}
   .side{position:sticky; top:84px; max-height:calc(100vh - 100px); overflow:auto; padding-bottom:4px}
 }
 
@@ -332,6 +332,7 @@ button{font:inherit; color:inherit}
 .signed-in span{overflow-wrap:anywhere}
 .signed-in button{border:1px solid var(--line); background:var(--white); color:var(--ink-soft); border-radius:999px; padding:7px 14px; font-size:.75rem; font-weight:600; cursor:pointer}
 .signin[hidden],.signed-in[hidden]{display:none}
+#syncPanel.needs-signin{order:-1; border-color:var(--rose)}
 #syncState.bad{color:var(--rose-deep); font-weight:600}
 .past-list{list-style:none; margin:0; padding:0; display:grid; gap:6px}
 .past-list button{width:100%; display:flex; align-items:center; gap:12px; text-align:left; cursor:pointer;
@@ -366,6 +367,35 @@ footer{height:calc(24px + env(safe-area-inset-bottom))}
 .btn-done:disabled{opacity:.45; cursor:not-allowed}
 .btn-close{background:var(--white); color:var(--ink-soft); border:1px solid var(--line)}
 .lock-note{font-size:.76rem; color:var(--ink-soft); margin:12px 0 0; text-align:center}
+.sheet{max-height:92vh; overflow:auto; -webkit-overflow-scrolling:touch}
+.sheet-links{display:flex; justify-content:center; gap:28px; margin-top:16px}
+.sheet-links button{border:0; background:none; color:var(--rose); font-weight:600; font-size:.8rem; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; padding:6px}
+.sheet-links button.danger{color:var(--ink-soft)}
+.repeat-note{font-size:.72rem; color:var(--ink-soft); letter-spacing:.04em}
+.evform{display:grid; gap:12px}
+.evform label{display:grid; gap:5px; font-size:.64rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft)}
+.evform input:not([type=checkbox]), .evform select, .evform textarea{width:100%; border:1px solid var(--line); border-radius:12px; padding:10px 12px; background:var(--blush);
+  font:400 16px "DM Sans",sans-serif; color:var(--ink); letter-spacing:0; text-transform:none; -webkit-appearance:none; appearance:none; min-height:44px}
+.evform select{background-image:linear-gradient(45deg, transparent 50%, var(--rose) 50%), linear-gradient(135deg, var(--rose) 50%, transparent 50%);
+  background-position:calc(100% - 18px) 50%, calc(100% - 13px) 50%; background-size:5px 5px; background-repeat:no-repeat; padding-right:32px}
+.evform textarea{min-height:70px; resize:vertical}
+.evform input:focus, .evform select:focus, .evform textarea:focus{outline:none; border-color:var(--rose)}
+.evform .two{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.evform .two[hidden]{display:none}
+.evform .toggle{display:flex; align-items:center; gap:10px; font-size:.88rem; font-weight:500; letter-spacing:0; text-transform:none; color:var(--ink); cursor:pointer}
+.evform .toggle input{appearance:none; -webkit-appearance:none; width:40px; height:24px; border-radius:99px; background:var(--line); position:relative; margin:0; cursor:pointer; transition:background .15s; flex:none}
+.evform .toggle input::after{content:""; position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:var(--white); transition:transform .15s; box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.evform .toggle input:checked{background:var(--rose)}
+.evform .toggle input:checked::after{transform:translateX(16px)}
+.form-err{color:var(--rose-deep); font-size:.8rem; margin:0; min-height:1em}
+.scope{display:grid; gap:10px; margin-top:6px}
+.scope button{border-radius:999px; padding:13px; font-weight:600; font-size:.82rem; letter-spacing:.04em; cursor:pointer; border:1px solid var(--rose); background:var(--white); color:var(--rose)}
+.scope button.primary{background:var(--rose); color:var(--white)}
+.scope button.plain{border-color:var(--line); color:var(--ink-soft)}
+.scope-text{font-size:.9rem; color:var(--ink-soft); margin:0 0 6px}
+.fab{position:fixed; right:max(20px, env(safe-area-inset-right)); bottom:calc(20px + env(safe-area-inset-bottom)); z-index:40; width:56px; height:56px; border-radius:50%;
+  border:0; background:var(--rose); color:var(--white); font-size:30px; font-weight:300; line-height:1; cursor:pointer; box-shadow:0 8px 24px rgba(196,73,124,.35); display:grid; place-items:center}
+.fab:active{transform:scale(.95)}
 </style>
 </head>
 <body>
@@ -432,7 +462,9 @@ footer{height:calc(24px + env(safe-area-inset-bottom))}
  </section>
 </div>
 
-<footer></footer>
+<footer style="height:90px"></footer>
+
+<button class="fab" id="addBtn" aria-label="Add event">+</button>
 
 <div class="modal" id="modal" hidden>
   <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div>
@@ -588,6 +620,9 @@ const Store = (() => {
     getList: name => get("list:" + name, []),
     setList: (name, items) => set("list:" + name, items),
     getSeeded: name => get("seeded:" + name, []),
+    // Your in-app event changes: "ev:added", "ev:over" (single days), "ev:series" (this & following weeks)
+    getData: (k, fallback) => get(k, fallback),
+    setData: (k, v) => set(k, v),
     setSeeded: (name, ids) => set("seeded:" + name, ids),
     // sync controls
     syncEnabled: enabled,
@@ -640,17 +675,54 @@ function scheduleForWeek(weekKey) {
   for (const s of BASE_SCHEDULES) if (s.from <= weekKey && (!pick || s.from > pick.from)) pick = s;
   return pick;
 }
-function eventsForDate(key) {
-  const d = parseKey(key);
-  const sched = scheduleForWeek(keyOf(mondayOf(d)));
-  const dk = DAY_KEYS[(d.getDay() + 6) % 7];
-  const oneOffs = ONE_OFF_EVENTS.filter(e => e.date === key);
-  const hidden = new Set(oneOffs.flatMap(e => e.replaces || []));
-  const base = (sched ? sched.events : []).filter(e => e.day === dk && !hidden.has(e.id));
-  return [...base, ...oneOffs.filter(e => !e.cancel)]
-    .map(e => ({ ...e, date: key }))
-    .sort((a, b) => (a.allDay === b.allDay ? 0 : a.allDay ? -1 : 1) || (a.allDay ? 0 : toMin(a.start) - toMin(b.start)));
+/* Events you add or change in the app are layered on top of the lists above:
+   - ev:added  → new events (one-off with "date", or weekly with "day" + "from")
+   - ev:series → "this and following weeks" changes, by event id, each starting on a week's Monday
+   - ev:over   → "this day only" changes, keyed "eventId@YYYY-MM-DD"
+   Earlier weeks are never touched, so past weeks stay exactly as they were. */
+const FIELDS = ["title", "start", "end", "allDay", "category", "location", "notes"];
+const fieldsOf = e => ({ title: e.title || "", start: e.start || "", end: e.end || "", allDay: !!e.allDay, category: e.category || "wellness", location: e.location || "", notes: e.notes || "" });
+const edits = () => ({ added: Store.getData("ev:added", []), over: Store.getData("ev:over", {}), series: Store.getData("ev:series", {}) });
+
+function seriesAt(series, id, weekKey) {
+  return (series[id] || []).filter(c => c.from <= weekKey).sort((a, b) => (a.from < b.from ? -1 : 1)).pop();
 }
+function eventsForDate(key) {
+  const d = parseKey(key), wk = keyOf(mondayOf(d));
+  const sched = scheduleForWeek(wk);
+  const dk = DAY_KEYS[(d.getDay() + 6) % 7];
+  const { added, over, series } = edits();
+  const fileOnce = ONE_OFF_EVENTS.filter(e => e.date === key);
+  const hidden = new Set(fileOnce.flatMap(e => e.replaces || []));
+
+  const weekly = [
+    ...(sched ? sched.events : []).map(e => ({ ...e, source: "file-weekly" })),
+    ...added.filter(a => a.day && a.from <= wk).map(e => ({ ...e, source: "user-weekly" })),
+  ].map(e => {
+    const ch = seriesAt(series, e.id, wk);
+    if (!ch) return e;
+    return ch.deleted ? null : { ...e, ...ch.fields, day: ch.day || e.day };
+  }).filter(e => e && e.day === dk && !hidden.has(e.id));
+
+  const once = [
+    ...fileOnce.filter(e => !e.cancel).map(e => ({ ...e, source: "file-once" })),
+    ...added.filter(a => a.date === key).map(e => ({ ...e, source: "user-once" })),
+  ];
+
+  let list = [...weekly, ...once].map(e => ({ ...e, date: key, overKey: e.id + "@" + key }));
+  list = list.flatMap(e => {
+    const o = e.source !== "user-once" && over[e.overKey];
+    if (!o) return [e];
+    if (o.deleted || (o.date && o.date !== key)) return [];
+    return [{ ...e, ...o.fields }];
+  });
+  for (const [k, o] of Object.entries(over)) {             // single days moved to this date
+    const at = k.lastIndexOf("@"), id = k.slice(0, at), src = k.slice(at + 1);
+    if (!o.deleted && o.date === key && src !== key) list.push({ id, ...o.fields, date: key, source: "moved", overKey: k, movedFrom: src });
+  }
+  return list.sort((a, b) => (!!a.allDay === !!b.allDay ? 0 : a.allDay ? -1 : 1) || (a.allDay ? 0 : toMin(a.start) - toMin(b.start)));
+}
+const isWeekly = e => e.source === "file-weekly" || e.source === "user-weekly";
 function weekStats(monKey) {
   let total = 0, done = 0;
   const mon = parseKey(monKey);
@@ -859,7 +931,7 @@ function render() {
   renderList(days);
   renderGrid(days);
   renderPast();
-  if (openEvent) fillSheet();
+  if (openEvent && openEvent.mode === "view") fillSheet();
 }
 function renderAll() { render(); renderLists(); }
 
@@ -867,18 +939,26 @@ $("#legend").innerHTML = Object.values(CATEGORIES)
   .map(c => `<span class="chip" style="--ac:${c.ac}"><i></i>${esc(c.label)}</span>`).join("");
 
 /* ===================== details sheet ===================== */
+// openEvent = { key, id, mode: "view" | "edit" | "new" | "scope", action: "save" | "delete", draft }
+const findEvent = (key, id) => eventsForDate(key).find(x => x.id === id);
+const longDate = d => `${DAY_NAMES[(d.getDay() + 6) % 7]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`;
+
 function fillSheet() {
-  const { key, id } = openEvent;
-  const e = eventsForDate(key).find(x => x.id === id);
-  if (!e) return closeSheet();
-  const d = parseKey(key), c = catOf(e), done = !!Store.getChecks(key)[id];
   const sheet = $("#sheet");
+  const { key, id, mode } = openEvent;
+  if (mode === "new") return fillForm(sheet, null);
+  const e = findEvent(key, id);
+  if (!e) return closeSheet();
   sheet.style.cssText = catStyle(e);
+  if (mode === "edit") return fillForm(sheet, e);
+  if (mode === "scope") return fillScope(sheet, e);
+
+  const d = parseKey(key), c = catOf(e), done = !!Store.getChecks(key)[id];
   sheet.innerHTML = `
     <span class="cat"><i></i>${esc(c.label)}</span>
     <h3 id="sheetTitle">${esc(e.title)}</h3>
     <dl>
-      <dt>Date</dt><dd>${DAY_NAMES[(d.getDay() + 6) % 7]}, ${MONTHS[d.getMonth()]} ${d.getDate()}</dd>
+      <dt>Date</dt><dd>${longDate(d)}${isWeekly(e) ? ` <span class="repeat-note">· repeats weekly</span>` : ""}</dd>
       <dt>Time</dt><dd>${fmtRange(e)}</dd>
       ${e.location ? `<dt>Where</dt><dd><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.location)}" target="_blank" rel="noopener">${esc(e.location)}</a></dd>` : ""}
       ${e.notes ? `<dt>Notes</dt><dd>${esc(e.notes)}</dd>` : ""}
@@ -887,17 +967,140 @@ function fillSheet() {
       <button class="btn-done ${done ? "is-done" : ""}" id="sheetDone" ${locked() ? "disabled" : ""}>${done ? "Undo" : "Mark done"}</button>
       <button class="btn-close" id="sheetClose">Close</button>
     </div>
-    ${locked() ? `<p class="lock-note">Past week — tap “Fix a check-off” to change this.</p>` : ""}`;
+    ${locked() ? `<p class="lock-note">Past week — tap “Fix a check-off” to change this.</p>`
+      : `<div class="sheet-links"><button id="sheetEdit">Edit</button><button id="sheetDelete" class="danger">Delete</button></div>`}`;
   $("#sheetClose").onclick = closeSheet;
-  $("#sheetDone").onclick = () => {
-    if (locked()) return;
-    Store.setCheck(key, id, !done);
-    render();
-  };
+  $("#sheetDone").onclick = () => { if (locked()) return; Store.setCheck(key, id, !done); render(); };
+  if (!locked()) {
+    $("#sheetEdit").onclick = () => { openEvent.mode = "edit"; fillSheet(); };
+    $("#sheetDelete").onclick = () => {
+      if (isWeekly(e)) { openEvent.mode = "scope"; openEvent.action = "delete"; return fillSheet(); }
+      if (confirm(`Delete “${e.title}”?`)) { deleteEvent(e, "one"); closeSheet(); }
+    };
+  }
 }
-function openSheet(key, id) { openEvent = { key, id }; fillSheet(); $("#modal").hidden = false; $("#sheetClose")?.focus(); }
+
+function fillForm(sheet, e) {
+  const isNew = !e;
+  const draft = openEvent.draft || (isNew
+    ? { title: "", date: openEvent.key, allDay: false, start: "09:00", end: "10:00", category: "wellness", location: "", notes: "", repeat: false }
+    : { ...fieldsOf(e), date: e.date });
+  if (isNew) sheet.style.cssText = catStyle({ category: draft.category });
+  sheet.innerHTML = `
+    <span class="cat"><i></i>${isNew ? "New event" : "Edit event"}</span>
+    <form class="evform" id="evForm" novalidate>
+      <label>Title<input name="title" value="${esc(draft.title)}" placeholder="What's happening?" autocomplete="off"></label>
+      <label>${e && isWeekly(e) ? "Date (this week's)" : "Date"}<input type="date" name="date" value="${esc(draft.date)}"></label>
+      <label class="toggle"><input type="checkbox" name="allDay" ${draft.allDay ? "checked" : ""}> All day</label>
+      <div class="two" id="timeRow" ${draft.allDay ? "hidden" : ""}>
+        <label>Start<input type="time" name="start" value="${esc(draft.start)}"></label>
+        <label>End<input type="time" name="end" value="${esc(draft.end)}"></label>
+      </div>
+      <label>Category<select name="category">${Object.entries(CATEGORIES).map(([k, c]) =>
+        `<option value="${k}" ${k === draft.category ? "selected" : ""}>${esc(c.label)}</option>`).join("")}</select></label>
+      <label>Location<input name="location" value="${esc(draft.location)}" placeholder="Optional" autocomplete="off"></label>
+      <label>Notes<textarea name="notes" placeholder="Optional">${esc(draft.notes)}</textarea></label>
+      ${isNew ? `<label class="toggle"><input type="checkbox" name="repeat" ${draft.repeat ? "checked" : ""}> Repeats every week</label>` : ""}
+      <p class="form-err" id="formErr"></p>
+      <div class="sheet-actions" style="margin-top:0">
+        <button type="submit" class="btn-done">Save</button>
+        <button type="button" class="btn-close" id="formCancel">Cancel</button>
+      </div>
+    </form>`;
+  const form = $("#evForm");
+  form.allDay.onchange = () => { $("#timeRow").hidden = form.allDay.checked; };
+  form.category.onchange = () => { sheet.style.setProperty("--ac", CATEGORIES[form.category.value].ac); };
+  $("#formCancel").onclick = () => { if (isNew) closeSheet(); else { openEvent.mode = "view"; openEvent.draft = null; fillSheet(); } };
+  form.onsubmit = ev => {
+    ev.preventDefault();
+    const v = {
+      title: form.title.value.trim(), date: form.date.value, allDay: form.allDay.checked,
+      start: form.start.value, end: form.end.value, category: form.category.value,
+      location: form.location.value.trim(), notes: form.notes.value.trim(), repeat: !!(form.repeat && form.repeat.checked),
+    };
+    const err = !v.title ? "Please add a title." : !v.date ? "Please pick a date."
+      : !v.allDay && (!v.start || !v.end) ? "Please add a start and end time."
+      : !v.allDay && toMin(v.end) <= toMin(v.start) ? "End time needs to be after the start time." : "";
+    if (err) { $("#formErr").textContent = err; return; }
+    if (v.allDay) { v.start = ""; v.end = ""; }
+    if (isNew) { addEvent(v); return finishEdit(v.date); }
+    if (isWeekly(e)) { openEvent.draft = v; openEvent.mode = "scope"; openEvent.action = "save"; return fillSheet(); }
+    saveEvent(e, v, "one"); finishEdit(v.date);
+  };
+  if (isNew) setTimeout(() => form.title.focus(), 50);
+}
+
+function fillScope(sheet, e) {
+  const del = openEvent.action === "delete";
+  sheet.innerHTML = `
+    <span class="cat"><i></i>Repeating event</span>
+    <h3 id="sheetTitle">${del ? "Delete" : "Save changes to"} “${esc(e.title)}”</h3>
+    <p class="scope-text">This event repeats every week. ${del ? "Delete" : "Change"}:</p>
+    <div class="scope">
+      <button class="primary" data-scope="one">Only ${longDate(parseKey(e.date))}</button>
+      <button data-scope="future">This and all following weeks</button>
+      <button class="plain" data-scope="cancel">Cancel</button>
+    </div>`;
+  sheet.querySelectorAll("[data-scope]").forEach(b => b.onclick = () => {
+    const scope = b.dataset.scope;
+    if (scope === "cancel") { openEvent.mode = del ? "view" : "edit"; return fillSheet(); }
+    if (del) { deleteEvent(e, scope); return closeSheet(); }
+    const v = openEvent.draft;
+    saveEvent(e, v, scope); finishEdit(v.date);
+  });
+}
+
+/* ----- saving changes (all through Store, so they sync) ----- */
+const newId = () => "e" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const dayKeyOf = key => DAY_KEYS[(parseKey(key).getDay() + 6) % 7];
+const weekOf = key => keyOf(mondayOf(parseKey(key)));
+function updateData(k, fallback, fn) { Store.setData(k, fn(JSON.parse(JSON.stringify(Store.getData(k, fallback))))); }
+
+function addEvent(v) {
+  const base = { id: newId(), ...fieldsOf(v) };
+  const ev = v.repeat ? { ...base, day: dayKeyOf(v.date), from: weekOf(v.date) } : { ...base, date: v.date };
+  updateData("ev:added", [], list => [...list, ev]);
+}
+function saveEvent(e, v, scope) {
+  const fields = fieldsOf(v);
+  if (e.source === "user-once") {
+    return updateData("ev:added", [], list => list.map(x => x.id === e.id ? { id: x.id, ...fields, date: v.date } : x));
+  }
+  if (scope === "future") {
+    const from = weekOf(e.date);
+    updateData("ev:series", {}, all => {
+      all[e.id] = [...(all[e.id] || []).filter(c => c.from < from), { from, fields, day: dayKeyOf(v.date) }];
+      return all;
+    });
+    return updateData("ev:over", {}, all => { delete all[e.overKey]; return all; });
+  }
+  updateData("ev:over", {}, all => { all[e.overKey] = { fields, date: v.date }; return all; });
+}
+function deleteEvent(e, scope) {
+  if (e.source === "user-once") return updateData("ev:added", [], list => list.filter(x => x.id !== e.id));
+  if (scope === "future") {
+    const from = weekOf(e.date);
+    updateData("ev:series", {}, all => { all[e.id] = [...(all[e.id] || []).filter(c => c.from < from), { from, deleted: true }]; return all; });
+    return updateData("ev:over", {}, all => { delete all[e.overKey]; return all; });
+  }
+  updateData("ev:over", {}, all => { all[e.overKey] = { deleted: true }; return all; });
+}
+function finishEdit(date) {
+  closeSheet();
+  const mon = mondayOf(parseKey(date));
+  if (keyOf(mon) !== viewKey()) viewMonday = mon;
+  render();
+}
+
+function openSheet(key, id) { openEvent = { key, id, mode: "view" }; fillSheet(); $("#modal").hidden = false; $("#sheetClose")?.focus(); }
+function openNew() {
+  const cur = viewKey() === currentMonKey();
+  openEvent = { key: cur ? todayKey : viewKey(), id: null, mode: "new" };
+  fillSheet(); $("#modal").hidden = false;
+}
 function closeSheet() { openEvent = null; $("#modal").hidden = true; }
-$("#modal").addEventListener("click", e => { if (e.target.id === "modal") closeSheet(); });
+$("#addBtn").onclick = openNew;
+$("#modal").addEventListener("click", e => { if (e.target.id === "modal" && (!openEvent || openEvent.mode === "view")) closeSheet(); });
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && openEvent) closeSheet();
   if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-open]")) { e.preventDefault(); openSheet(e.target.dataset.key, e.target.dataset.id); }
@@ -951,6 +1154,7 @@ function renderSync() {
   if (!Store.syncEnabled()) return;
   const st = Store.status(), signedIn = !!Store.email() && st.state !== "signedout";
   $("#syncPanel").hidden = false;
+  $("#syncPanel").classList.toggle("needs-signin", !signedIn);
   $("#syncState").textContent = SYNC_TEXT[st.state] || "";
   $("#syncState").classList.toggle("bad", st.state === "error" || st.state === "signedout");
   $("#signInForm").hidden = signedIn;

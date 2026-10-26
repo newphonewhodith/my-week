@@ -223,6 +223,31 @@ button{font:inherit; color:inherit}
 .bar{flex:1; height:4px; border-radius:99px; background:var(--rose-soft); overflow:hidden}
 .bar span{display:block; height:100%; width:0; border-radius:99px; background:var(--rose); transition:width .4s}
 
+.tabs{display:flex; gap:4px; margin:18px 0 4px; padding:4px; background:var(--white); border:1px solid var(--line); border-radius:999px; width:max-content; max-width:100%}
+.tabs button{border:0; background:none; border-radius:999px; padding:9px 22px; font-weight:600; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--rose); color:var(--white)}
+body.tab-meals .cal-only, body.tab-meals .list-view, body.tab-meals .grid-view{display:none !important}
+.meals-view[hidden]{display:none}
+.meals-view{margin-top:14px}
+.meals-top{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px}
+.meals-top p{margin:0; font-size:.82rem; color:var(--ink-soft)}
+.meals-top button{border:1px solid var(--rose); background:var(--white); color:var(--rose); border-radius:999px; padding:8px 14px; font-weight:600; font-size:.74rem; letter-spacing:.06em; text-transform:uppercase; cursor:pointer}
+.meals-top button[hidden]{display:none}
+.meal-grid{display:grid; gap:12px; grid-template-columns:1fr}
+@media (min-width:700px){ .meal-grid{grid-template-columns:repeat(3, minmax(0,1fr))} .meal-grid #groceryPanel{grid-column:span 2} }
+.meal-grid #groceryPanel{display:flex; flex-direction:column}
+.meal-grid #groceryPanel .items{flex:1}
+.meal-day{background:var(--white); border:1px solid var(--line); border-radius:18px; padding:14px 14px 10px}
+.meal-day.today{border-color:var(--rose); box-shadow:0 6px 24px rgba(196,73,124,.10)}
+.meal-day .day-head{margin-bottom:6px}
+.meal-row{display:grid; grid-template-columns:78px 1fr; align-items:start; gap:8px; padding:6px 0; border-bottom:1px solid var(--line)}
+.meal-row:last-child{border-bottom:0}
+.meal-row span{font-size:.62rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--rose); padding-top:9px}
+.meal-row textarea{width:100%; min-height:36px; resize:none; overflow:hidden; border:1px solid transparent; border-radius:10px; padding:7px 9px; background:var(--blush);
+  font:400 16px/1.35 "DM Sans",sans-serif; color:var(--ink)}
+.meal-row textarea:focus{outline:none; border-color:var(--rose); background:var(--white)}
+.meal-row textarea::placeholder{color:#c9aab8}
+.meal-row textarea[readonly]{background:transparent; color:var(--ink-soft)}
 .legend{display:flex; flex-wrap:wrap; gap:6px 16px; margin:14px 0 18px}
 .chip{display:inline-flex; align-items:center; gap:7px; font-size:.75rem; font-weight:500; color:var(--ink-soft)}
 .chip i{width:9px; height:9px; border-radius:50%; background:var(--ac)}
@@ -333,6 +358,11 @@ button{font:inherit; color:inherit}
 .signed-in button{border:1px solid var(--line); background:var(--white); color:var(--ink-soft); border-radius:999px; padding:7px 14px; font-size:.75rem; font-weight:600; cursor:pointer}
 .signin[hidden],.signed-in[hidden]{display:none}
 #syncPanel.needs-signin{border-color:var(--rose)}
+.sync-alert{display:block; width:100%; margin:16px 0 0; padding:11px 14px; border:1px solid var(--rose); border-radius:14px; background:var(--white);
+  color:var(--rose-deep); font:600 .86rem "DM Sans",sans-serif; text-align:left; cursor:pointer}
+.sync-alert[hidden]{display:none}
+.signed-in small{font-size:.72rem}
+.signed-in > span{flex:1}
 #syncState.bad{color:var(--rose-deep); font-weight:600}
 .past-list{list-style:none; margin:0; padding:0; display:grid; gap:6px}
 .past-list button{width:100%; display:flex; align-items:center; gap:12px; text-align:left; cursor:pointer;
@@ -396,6 +426,7 @@ footer{height:calc(24px + env(safe-area-inset-bottom))}
 .fab{position:fixed; right:max(20px, env(safe-area-inset-right)); bottom:calc(20px + env(safe-area-inset-bottom)); z-index:40; width:56px; height:56px; border-radius:50%;
   border:0; background:var(--rose); color:var(--white); font-size:30px; font-weight:300; line-height:1; cursor:pointer; box-shadow:0 8px 24px rgba(196,73,124,.35); display:grid; place-items:center}
 .fab:active{transform:scale(.95)}
+.fab[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -419,12 +450,18 @@ footer{height:calc(24px + env(safe-area-inset-bottom))}
     <button id="editBtn">Fix a check-off</button>
   </div>
 
-  <div class="progress"><div class="bar"><span id="progressFill"></span></div><span id="progressText"></span></div>
-  <div class="legend" id="legend"></div>
+  <button class="sync-alert" id="syncAlert" hidden></button>
+  <div class="tabs" role="tablist">
+    <button role="tab" data-tab="calendar" aria-selected="true">Calendar</button>
+    <button role="tab" data-tab="meals" aria-selected="false">Meals</button>
+  </div>
+  <div class="progress cal-only"><div class="bar"><span id="progressFill"></span></div><span id="progressText"></span></div>
+  <div class="legend cal-only" id="legend"></div>
 
   <main>
     <section class="list-view" id="listView" aria-label="Day by day"></section>
     <section class="grid-view" id="gridView" aria-label="Week view"></section>
+    <section class="meals-view" id="mealsView" aria-label="Meal plan" hidden></section>
   </main>
 
  </div>
@@ -435,7 +472,7 @@ footer{height:calc(24px + env(safe-area-inset-bottom))}
     <ul class="items" id="todosList"></ul>
     <form class="add" data-add="todos"><input type="text" placeholder="Add a to-do…" aria-label="Add a to-do" enterkeyhint="done"><button type="submit">Add</button></form>
   </section>
-  <section class="panel">
+  <section class="panel" id="groceryPanel">
     <div class="panel-head"><h2>Grocery list</h2><small id="groceriesCount"></small></div>
     <ul class="items" id="groceriesList"></ul>
     <form class="add" data-add="groceries"><input type="text" placeholder="Add an item…" aria-label="Add a grocery item" enterkeyhint="done"><button type="submit">Add</button></form>
@@ -450,7 +487,8 @@ footer{height:calc(24px + env(safe-area-inset-bottom))}
       <p class="hint err" id="syncErr"></p>
     </form>
     <div id="signedIn" class="signed-in" hidden>
-      <span id="syncWho"></span>
+      <span><span id="syncWho"></span><br><small id="syncWhen"></small></span>
+      <button type="button" id="syncNowBtn">Sync now</button>
       <button type="button" id="signOutBtn">Sign out</button>
     </div>
   </section>
@@ -495,7 +533,7 @@ const Store = (() => {
   const enabled = () => !!(SYNC.url && SYNC.key);
   let session = ls.get(AUTH);
   let pending = new Set(ls.get(PENDING) || []);
-  let onChange = () => {}, onStatus = () => {};
+  let onChange = () => {}, onStatus = () => {}, lastSync = 0;
   let status = { state: !enabled() ? "off" : session ? "synced" : "signedout", msg: "" };
   const setStatus = (state, msg = "") => { status = { state, msg }; onStatus(status); };
   const savePending = () => ls.set(PENDING, [...pending]);
@@ -580,7 +618,7 @@ const Store = (() => {
           });
           keys.forEach(k => pending.delete(k)); savePending();
         }
-        setStatus("synced");
+        lastSync = Date.now(); setStatus("synced");
         if (changed) onChange();
       } catch (e) {
         if (e.message === "signedout") setStatus("signedout", "Please sign in again.");
@@ -611,7 +649,8 @@ const Store = (() => {
         sync();
         document.addEventListener("visibilitychange", () => { if (!document.hidden) sync(); });
         window.addEventListener("online", sync);
-        setInterval(() => { if (!document.hidden) sync(); }, 60000);
+        setInterval(() => { if (!document.hidden) sync(); }, 15000);
+        window.addEventListener("focus", sync); window.addEventListener("pageshow", sync);
       }
     },
     getChecks: date => get("checks:" + date, {}),          // { eventId: true } for that date
@@ -627,6 +666,8 @@ const Store = (() => {
     // sync controls
     syncEnabled: enabled,
     status: () => status,
+    lastSync: () => lastSync,
+    syncNow: () => sync(),
     email: () => (session && session.email) || "",
     onChange: fn => (onChange = fn),
     onStatus: fn => (onStatus = fn),
@@ -931,9 +972,83 @@ function render() {
   renderList(days);
   renderGrid(days);
   renderPast();
+  if (typeof renderMeals === "function") renderMeals();
   if (openEvent && openEvent.mode === "view") fillSheet();
 }
 function renderAll() { render(); renderLists(); }
+
+/* ===================== meal plan ===================== */
+// Saved per week as "meals:<Monday>" → { mon: { breakfast, lunch, dinner, snacks }, … } (synced)
+const MEALS = [["breakfast", "Breakfast"], ["lunch", "Lunch"], ["dinner", "Dinner"], ["snacks", "Snacks"]];
+const mealsOf = wk => Store.getData("meals:" + wk, {});
+const hasMeals = m => Object.values(m || {}).some(d => d && Object.values(d).some(v => v && v.trim()));
+let activeTab = "calendar";
+try { activeTab = localStorage.getItem("myweek:tab") || "calendar"; } catch (e) {}
+
+function renderMeals() {
+  const view = $("#mealsView");
+  view.hidden = activeTab !== "meals";
+  if (activeTab !== "meals") { parkGroceries(); view.dataset.week = ""; return; }
+  const wk = viewKey(), meals = mealsOf(wk), lock = locked();
+  const prevWk = keyOf(addDays(viewMonday, -7));
+  const canCopy = !lock && !hasMeals(meals) && hasMeals(mealsOf(prevWk));
+  // keep what you're typing: if this week is already on screen, only refresh the other boxes
+  if (view.dataset.week === wk && view.dataset.lock === String(lock) && view.dataset.today === todayKey) {
+    view.querySelectorAll("textarea[data-day]").forEach(t => {
+      if (t !== document.activeElement) { t.value = (meals[t.dataset.day] || {})[t.dataset.meal] || ""; grow(t); }
+    });
+    $("#copyMeals").hidden = !canCopy;
+    return;
+  }
+  view.dataset.week = wk; view.dataset.lock = String(lock); view.dataset.today = todayKey;
+  parkGroceries();
+  view.innerHTML = `
+    <div class="meals-top"><p>${lock ? "Past week · view only" : "Tap a meal to plan it. Saves as you type."}</p>
+      <button id="copyMeals" ${canCopy ? "" : "hidden"}>Copy last week's meals</button></div>
+    <div class="meal-grid">${DAY_KEYS.map((dk, i) => {
+      const d = addDays(viewMonday, i), key = keyOf(d), m = meals[dk] || {};
+      return `<article class="meal-day ${key === todayKey ? "today" : ""}">
+        <div class="day-head"><span class="day-name">${DAY_NAMES[i]}</span><span class="day-date">${MONTHS[d.getMonth()]} ${d.getDate()}</span>
+          ${key === todayKey ? '<span class="badge">Today</span>' : ""}</div>
+        ${MEALS.map(([mk, label]) => `<label class="meal-row"><span>${label}</span>
+          <textarea rows="1" data-day="${dk}" data-meal="${mk}" placeholder="—" ${lock ? "readonly" : ""}>${esc(m[mk] || "")}</textarea></label>`).join("")}
+      </article>`;
+    }).join("")}</div>`;
+  view.querySelector(".meal-grid").appendChild($("#groceryPanel"));
+  view.querySelectorAll("textarea").forEach(grow);
+  $("#copyMeals").onclick = () => { Store.setData("meals:" + wk, JSON.parse(JSON.stringify(mealsOf(prevWk)))); view.dataset.week = ""; renderMeals(); };
+}
+// The grocery list sits beside Sunday on the Meals tab, and back in the side column on Calendar.
+function parkGroceries() { const g = $("#groceryPanel"), sync = $("#syncPanel"); if (g.parentElement !== sync.parentElement) sync.before(g); }
+function grow(t) { t.style.height = "auto"; t.style.height = t.scrollHeight + 2 + "px"; }
+
+let mealTimer;
+document.addEventListener("input", e => {
+  const t = e.target;
+  if (!t.matches("#mealsView textarea[data-day]") || locked()) return;
+  grow(t);
+  const wk = viewKey();
+  clearTimeout(mealTimer);
+  mealTimer = setTimeout(() => {
+    const all = JSON.parse(JSON.stringify(mealsOf(wk)));
+    $("#mealsView").querySelectorAll("textarea[data-day]").forEach(x => {
+      all[x.dataset.day] = all[x.dataset.day] || {};
+      all[x.dataset.day][x.dataset.meal] = x.value;
+    });
+    Store.setData("meals:" + wk, all);
+    $("#copyMeals").hidden = true;
+  }, 500);
+});
+
+function setTab(tab) {
+  activeTab = tab;
+  try { localStorage.setItem("myweek:tab", tab); } catch (e) {}
+  document.body.classList.toggle("tab-meals", tab === "meals");
+  document.querySelectorAll(".tabs [data-tab]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === tab)));
+  $("#addBtn").hidden = tab === "meals";
+  renderMeals();
+}
+document.querySelectorAll(".tabs [data-tab]").forEach(b => b.onclick = () => setTab(b.dataset.tab));
 
 $("#legend").innerHTML = Object.values(CATEGORIES)
   .map(c => `<span class="chip" style="--ac:${c.ac}"><i></i>${esc(c.label)}</span>`).join("");
@@ -1160,6 +1275,13 @@ function renderSync() {
   $("#signInForm").hidden = signedIn;
   $("#signedIn").hidden = !signedIn;
   $("#syncWho").textContent = Store.email();
+  const t = Store.lastSync();
+  $("#syncWhen").textContent = t ? "Last synced " + new Date(t).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "";
+  const alert = $("#syncAlert");
+  const msg = !signedIn ? "Sync is off on this device — tap to sign in"
+    : st.state === "error" ? "Couldn't sync: " + (st.msg || "unknown error") + " — tap for details"
+    : "";
+  alert.hidden = !msg; alert.textContent = msg;
   if (st.msg) $("#syncErr").textContent = st.msg;
 }
 Store.onStatus(renderSync);
@@ -1174,8 +1296,11 @@ $("#signInForm").addEventListener("submit", async e => {
   renderSync();
 });
 $("#signOutBtn").onclick = () => { Store.signOut(); renderSync(); };
+$("#syncNowBtn").onclick = () => Store.syncNow();
+$("#syncAlert").onclick = () => { $("#syncPanel").scrollIntoView({ behavior: "smooth", block: "center" }); setTimeout(() => { const f = $("#syncEmail"); if (f && !$("#signInForm").hidden) f.focus(); }, 400); };
 
 /* ===================== start ===================== */
+setTab(activeTab);
 renderSync();
 Store.init().then(() => {
   renderAll();

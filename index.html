@@ -134,6 +134,17 @@ const ONE_OFF_EVENTS = [
   { id: "breakfast-casserole", date: "2026-11-06", start: "08:00", end: "10:00", title: "Coffee + breakfast casserole for Jillian's family", category: "wedding", notes: "So rehearsal day goes smoothly" },
   { id: "jillian-wedding", date: "2026-11-07", allDay: true, title: "Jillian's wedding day", category: "wedding" },
 
+  // ── MTG finance call changes (from the Oct–Dec schedule) ──
+  // Regular calls (Tue 12–1, Fri 8–9) come from the weekly schedule; only the differences are listed here.
+  { id: "fin-1105", date: "2026-11-05", start: "08:00", end: "09:00", title: "MTG finance review with Karson & Eva", category: "work", notes: "Moved from Fri Nov 6 (Jillian's rehearsal day)" },
+  { id: "fin-1113", date: "2026-11-13", start: "08:00", end: "09:00", title: "MTG finance review with Karson & Eva", category: "work", notes: "Same day as Leadership Academy, which starts at 1:00 PM", replaces: ["fri-finance"] },
+  { id: "fin-1120", date: "2026-11-20", start: "08:00", end: "09:00", title: "MTG finance review with Karson & Eva (tentative)", category: "work", notes: "Needs MTG input · Eva's cousin's wedding is this day; may move to Thu Nov 19", replaces: ["fri-finance"] },
+  { id: "fin-1124", date: "2026-11-24", start: "12:00", end: "13:00", title: "MTG finance review with Karson & Eva (tentative)", category: "work", notes: "Thanksgiving week · up to MTG whether to meet", replaces: ["tue-finance"] },
+  { id: "fin-skip-1127", date: "2026-11-27", cancel: true, replaces: ["fri-finance"] },   // skip: day after Thanksgiving
+  { id: "fin-1222", date: "2026-12-22", start: "12:00", end: "13:00", title: "MTG finance review with Karson & Eva (tentative)", category: "work", notes: "Tuesday before Christmas · up to MTG whether to meet", replaces: ["tue-finance"] },
+  { id: "fin-skip-1225", date: "2026-12-25", cancel: true, replaces: ["fri-finance"] },   // skip: Christmas Day
+  { id: "fin-1229", date: "2026-12-29", start: "19:30", end: "20:30", title: "MTG finance review with Karson & Eva (tentative)", category: "work", notes: "Evening make-up session to prep EoY, P&L statements, quarterly review docs · needs MTG input · end time TBD", replaces: ["tue-finance"] },
+
   // ── Washington Commanders games (Eastern time) ──
   { id: "cmd-eagles",    date: "2026-11-01", start: "20:20", end: "23:35", title: "Commanders vs Eagles", category: "football", notes: "Sunday Night Football · home" },
   { id: "cmd-rams",      date: "2026-11-08", start: "13:00", end: "16:15", title: "Commanders vs Rams", category: "football", notes: "Home" },

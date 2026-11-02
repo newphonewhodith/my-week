@@ -241,13 +241,28 @@ button{font:inherit; color:inherit}
 .tabs{display:flex; gap:4px; margin:18px 0 4px; padding:4px; background:var(--white); border:1px solid var(--line); border-radius:999px; width:max-content; max-width:100%}
 .tabs button{border:0; background:none; border-radius:999px; padding:9px 22px; font-weight:600; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); cursor:pointer}
 .tabs button[aria-selected=true]{background:var(--rose); color:var(--white)}
-body.tab-meals .cal-only, body.tab-meals .list-view, body.tab-meals .grid-view{display:none !important}
+body.tab-plan .cal-only, body.tab-plan .list-view, body.tab-plan .grid-view{display:none !important}
+.tabs button{padding:9px 18px}
+.meal-day .day-head{flex-wrap:wrap}
+.wx{margin-left:auto; font-size:.74rem; color:var(--ink-soft); white-space:nowrap; font-variant-numeric:tabular-nums}
+.wx b{color:var(--rose-deep); font-weight:600}
+.meal-row.solo{grid-template-columns:1fr}
+.meal-row.solo textarea{min-height:84px}
+.plan-notes{background:var(--white); border:1px solid var(--line); border-radius:18px; padding:16px 18px; display:flex; flex-direction:column}
+.plan-notes h2{font-family:"Cormorant Garamond",Georgia,serif; font-weight:600; font-size:1.45rem; color:var(--rose-deep); margin:0 0 4px}
+.plan-notes p{margin:0 0 10px; font-size:.78rem; color:var(--ink-soft)}
+.plan-notes textarea{flex:1; width:100%; min-height:120px; resize:none; border:1px solid transparent; border-radius:12px; padding:10px 12px; background:var(--blush); font:400 16px/1.4 "DM Sans",sans-serif; color:var(--ink)}
+.plan-notes textarea:focus{outline:none; border-color:var(--rose); background:var(--white)}
+.plan-notes textarea[readonly]{background:transparent; color:var(--ink-soft)}
+@media (min-width:700px){ .meal-grid .plan-notes{grid-column:span 2} }
+.wx-credit{font-size:.68rem; color:var(--ink-soft); margin:10px 2px 0}
+.wx-credit a{color:inherit}
 .meals-view[hidden]{display:none}
 .meals-view{margin-top:14px}
 .meals-top{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px}
 .meals-top p{margin:0; font-size:.82rem; color:var(--ink-soft)}
 .meals-top button{border:1px solid var(--rose); background:var(--white); color:var(--rose); border-radius:999px; padding:8px 14px; font-weight:600; font-size:.74rem; letter-spacing:.06em; text-transform:uppercase; cursor:pointer}
-.meals-top button[hidden]{display:none}
+.meals-top button[hidden], .meals-top .copy-btn[hidden]{display:none}
 .meal-grid{display:grid; gap:12px; grid-template-columns:1fr}
 @media (min-width:700px){ .meal-grid{grid-template-columns:repeat(3, minmax(0,1fr))} .meal-grid #groceryPanel{grid-column:span 2} }
 .meal-grid #groceryPanel{display:flex; flex-direction:column}
@@ -469,6 +484,7 @@ footer{height:calc(24px + env(safe-area-inset-bottom))}
   <div class="tabs" role="tablist">
     <button role="tab" data-tab="calendar" aria-selected="true">Calendar</button>
     <button role="tab" data-tab="meals" aria-selected="false">Meals</button>
+    <button role="tab" data-tab="outfits" aria-selected="false">Outfits</button>
   </div>
   <div class="progress cal-only"><div class="bar"><span id="progressFill"></span></div><span id="progressText"></span></div>
   <div class="legend cal-only" id="legend"></div>
@@ -477,6 +493,7 @@ footer{height:calc(24px + env(safe-area-inset-bottom))}
     <section class="list-view" id="listView" aria-label="Day by day"></section>
     <section class="grid-view" id="gridView" aria-label="Week view"></section>
     <section class="meals-view" id="mealsView" aria-label="Meal plan" hidden></section>
+    <section class="meals-view" id="outfitsView" aria-label="Outfit plan" hidden></section>
   </main>
 
  </div>
@@ -992,75 +1009,131 @@ function render() {
 }
 function renderAll() { render(); renderLists(); }
 
-/* ===================== meal plan ===================== */
-// Saved per week as "meals:<Monday>" → { mon: { breakfast, lunch, dinner, snacks }, … } (synced)
+/* ===================== meal & outfit plans ===================== */
+// Saved per week, synced:
+//   "meals:<Monday>"   → { mon: { breakfast, lunch, dinner, snacks }, … }
+//   "outfits:<Monday>" → { mon: { outfit }, …, notes: { text } }
 const MEALS = [["breakfast", "Breakfast"], ["lunch", "Lunch"], ["dinner", "Dinner"], ["snacks", "Snacks"]];
-const mealsOf = wk => Store.getData("meals:" + wk, {});
-const hasMeals = m => Object.values(m || {}).some(d => d && Object.values(d).some(v => v && v.trim()));
+const PLANS = {
+  meals: {
+    view: "#mealsView", prefix: "meals:", rows: MEALS, copy: "Copy last week's meals",
+    hint: "Tap a meal to plan it. Saves as you type.", side: "groceries",
+  },
+  outfits: {
+    view: "#outfitsView", prefix: "outfits:", rows: [["outfit", "Outfit"]], copy: "Copy last week's outfits",
+    hint: "Tap a day to plan your outfit. Saves as you type.", side: "notes", weather: true,
+  },
+};
+const planOf = (kind, wk) => Store.getData(PLANS[kind].prefix + wk, {});
+const hasPlan = m => Object.values(m || {}).some(d => d && Object.values(d).some(v => v && String(v).trim()));
 let activeTab = "calendar";
 try { activeTab = localStorage.getItem("myweek:tab") || "calendar"; } catch (e) {}
+if (!["calendar", "meals", "outfits"].includes(activeTab)) activeTab = "calendar";
 
-function renderMeals() {
-  const view = $("#mealsView");
-  view.hidden = activeTab !== "meals";
-  if (activeTab !== "meals") { parkGroceries(); view.dataset.week = ""; return; }
-  const wk = viewKey(), meals = mealsOf(wk), lock = locked();
+function renderMeals() { for (const kind of Object.keys(PLANS)) renderPlan(kind); }
+function renderPlan(kind) {
+  const P = PLANS[kind], view = $(P.view);
+  view.hidden = activeTab !== kind;
+  if (activeTab !== kind) { if (P.side === "groceries") parkGroceries(); view.dataset.week = ""; return; }
+  const wk = viewKey(), data = planOf(kind, wk), lock = locked();
   const prevWk = keyOf(addDays(viewMonday, -7));
-  const canCopy = !lock && !hasMeals(meals) && hasMeals(mealsOf(prevWk));
+  const canCopy = !lock && !hasPlan(data) && hasPlan(planOf(kind, prevWk));
   // keep what you're typing: if this week is already on screen, only refresh the other boxes
   if (view.dataset.week === wk && view.dataset.lock === String(lock) && view.dataset.today === todayKey) {
     view.querySelectorAll("textarea[data-day]").forEach(t => {
-      if (t !== document.activeElement) { t.value = (meals[t.dataset.day] || {})[t.dataset.meal] || ""; grow(t); }
+      if (t !== document.activeElement) { t.value = (data[t.dataset.day] || {})[t.dataset.field] || ""; grow(t); }
     });
-    $("#copyMeals").hidden = !canCopy;
+    view.querySelector(".copy-btn").hidden = !canCopy;
+    if (P.weather) fillWeather();
     return;
   }
   view.dataset.week = wk; view.dataset.lock = String(lock); view.dataset.today = todayKey;
-  parkGroceries();
+  if (P.side === "groceries") parkGroceries();
+  const solo = P.rows.length === 1;
+  const notes = (data.notes || {}).text || "";
   view.innerHTML = `
-    <div class="meals-top"><p>${lock ? "Past week · view only" : "Tap a meal to plan it. Saves as you type."}</p>
-      <button id="copyMeals" ${canCopy ? "" : "hidden"}>Copy last week's meals</button></div>
+    <div class="meals-top"><p>${lock ? "Past week · view only" : P.hint}</p>
+      <button class="copy-btn" ${canCopy ? "" : "hidden"}>${P.copy}</button></div>
     <div class="meal-grid">${DAY_KEYS.map((dk, i) => {
-      const d = addDays(viewMonday, i), key = keyOf(d), m = meals[dk] || {};
+      const d = addDays(viewMonday, i), key = keyOf(d), m = data[dk] || {};
       return `<article class="meal-day ${key === todayKey ? "today" : ""}">
         <div class="day-head"><span class="day-name">${DAY_NAMES[i]}</span><span class="day-date">${MONTHS[d.getMonth()]} ${d.getDate()}</span>
-          ${key === todayKey ? '<span class="badge">Today</span>' : ""}</div>
-        ${MEALS.map(([mk, label]) => `<label class="meal-row"><span>${label}</span>
-          <textarea rows="1" data-day="${dk}" data-meal="${mk}" placeholder="—" ${lock ? "readonly" : ""}>${esc(m[mk] || "")}</textarea></label>`).join("")}
+          ${key === todayKey ? '<span class="badge">Today</span>' : ""}${P.weather ? `<span class="wx" data-wx="${key}"></span>` : ""}</div>
+        ${P.rows.map(([fk, label]) => `<label class="meal-row ${solo ? "solo" : ""}">${solo ? "" : `<span>${label}</span>`}
+          <textarea rows="${solo ? 3 : 1}" data-day="${dk}" data-field="${fk}" placeholder="${solo ? "What are you wearing?" : "—"}" aria-label="${DAY_NAMES[i]} ${label}" ${lock ? "readonly" : ""}>${esc(m[fk] || "")}</textarea></label>`).join("")}
       </article>`;
-    }).join("")}</div>`;
-  view.querySelector(".meal-grid").appendChild($("#groceryPanel"));
-  view.querySelectorAll("textarea").forEach(grow);
-  $("#copyMeals").onclick = () => { Store.setData("meals:" + wk, JSON.parse(JSON.stringify(mealsOf(prevWk)))); view.dataset.week = ""; renderMeals(); };
+    }).join("")}
+    ${P.side === "notes" ? `<section class="plan-notes"><h2>Outfit notes</h2><p>Laundry, dry cleaning, things to buy or pull out for the week.</p>
+      <textarea data-day="notes" data-field="text" aria-label="Outfit notes" placeholder="—" ${lock ? "readonly" : ""}>${esc(notes)}</textarea></section>` : ""}
+    </div>
+    ${P.weather ? `<p class="wx-credit">Weather for Cary, NC · <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a></p>` : ""}`;
+  if (P.side === "groceries") view.querySelector(".meal-grid").appendChild($("#groceryPanel"));
+  view.querySelectorAll(".meal-row textarea").forEach(grow);
+  view.querySelector(".copy-btn").onclick = () => {
+    Store.setData(P.prefix + wk, JSON.parse(JSON.stringify(planOf(kind, prevWk))));
+    view.dataset.week = ""; renderPlan(kind);
+  };
+  if (P.weather) { fillWeather(); loadWeather(); }
 }
-// The grocery list sits beside Sunday on the Meals tab, and back in the side column on Calendar.
+// The grocery list sits beside Sunday on the Meals tab, and back in the side column elsewhere.
 function parkGroceries() { const g = $("#groceryPanel"), sync = $("#syncPanel"); if (g.parentElement !== sync.parentElement) sync.before(g); }
 function grow(t) { t.style.height = "auto"; t.style.height = t.scrollHeight + 2 + "px"; }
 
-let mealTimer;
+const planTimers = {};
 document.addEventListener("input", e => {
   const t = e.target;
-  if (!t.matches("#mealsView textarea[data-day]") || locked()) return;
-  grow(t);
-  const wk = viewKey();
-  clearTimeout(mealTimer);
-  mealTimer = setTimeout(() => {
-    const all = JSON.parse(JSON.stringify(mealsOf(wk)));
-    $("#mealsView").querySelectorAll("textarea[data-day]").forEach(x => {
+  const kind = Object.keys(PLANS).find(k => t.closest(PLANS[k].view));
+  if (!kind || !t.matches("textarea[data-day]") || locked()) return;
+  if (t.closest(".meal-row")) grow(t);
+  const wk = viewKey(), view = $(PLANS[kind].view);
+  clearTimeout(planTimers[kind]);
+  planTimers[kind] = setTimeout(() => {
+    const all = JSON.parse(JSON.stringify(planOf(kind, wk)));
+    view.querySelectorAll("textarea[data-day]").forEach(x => {
       all[x.dataset.day] = all[x.dataset.day] || {};
-      all[x.dataset.day][x.dataset.meal] = x.value;
+      all[x.dataset.day][x.dataset.field] = x.value;
     });
-    Store.setData("meals:" + wk, all);
-    $("#copyMeals").hidden = true;
+    Store.setData(PLANS[kind].prefix + wk, all);
+    view.querySelector(".copy-btn").hidden = true;
   }, 500);
 });
+
+/* ----- weather (Open-Meteo: free, no account) ----- */
+const WX_URL = "https://api.open-meteo.com/v1/forecast?latitude=35.7915&longitude=-78.7811"
+  + "&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max"
+  + "&temperature_unit=fahrenheit&timezone=America%2FNew_York&past_days=7&forecast_days=16";
+let weather = null, wxLoading = false;
+try { weather = JSON.parse(localStorage.getItem("myweek:weather") || "null"); } catch (e) {}
+async function loadWeather() {
+  if (wxLoading || (weather && Date.now() - weather.at < 60 * 60 * 1000)) return;   // refresh hourly
+  wxLoading = true;
+  try {
+    const r = await fetch(WX_URL);
+    if (!r.ok) throw new Error(r.status);
+    const j = await r.json(), days = {};
+    (j.daily.time || []).forEach((t, i) => {
+      const hi = j.daily.temperature_2m_max[i], lo = j.daily.temperature_2m_min[i], rain = j.daily.precipitation_probability_max[i];
+      if (hi != null && lo != null) days[t] = { hi: Math.round(hi), lo: Math.round(lo), rain: rain == null ? null : Math.round(rain) };
+    });
+    weather = { at: Date.now(), days };
+    try { localStorage.setItem("myweek:weather", JSON.stringify(weather)); } catch (e) {}
+  } catch (e) { /* offline or unavailable — cards just show no weather */ }
+  wxLoading = false;
+  fillWeather();
+}
+function fillWeather() {
+  document.querySelectorAll("[data-wx]").forEach(el => {
+    const w = weather && weather.days[el.dataset.wx];
+    el.innerHTML = w ? `<b>${w.hi}°</b> / ${w.lo}°${w.rain != null ? ` · ${w.rain}% rain` : ""}` : "";
+  });
+}
 
 function setTab(tab) {
   activeTab = tab;
   try { localStorage.setItem("myweek:tab", tab); } catch (e) {}
-  document.body.classList.toggle("tab-meals", tab === "meals");
+  document.body.classList.toggle("tab-plan", tab !== "calendar");
   document.querySelectorAll(".tabs [data-tab]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === tab)));
-  $("#addBtn").hidden = tab === "meals";
+  $("#addBtn").hidden = tab !== "calendar";
   renderMeals();
 }
 document.querySelectorAll(".tabs [data-tab]").forEach(b => b.onclick = () => setTab(b.dataset.tab));

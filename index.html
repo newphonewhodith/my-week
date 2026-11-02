@@ -1012,7 +1012,7 @@ function renderAll() { render(); renderLists(); }
 /* ===================== meal & outfit plans ===================== */
 // Saved per week, synced:
 //   "meals:<Monday>"   → { mon: { breakfast, lunch, dinner, snacks }, … }
-//   "outfits:<Monday>" → { mon: { outfit }, …, notes: { text } }
+//   "outfits:<Monday>" → { mon: { outfit, outfit2, outfit3 }, …, notes: { text } }
 const MEALS = [["breakfast", "Breakfast"], ["lunch", "Lunch"], ["dinner", "Dinner"], ["snacks", "Snacks"]];
 const PLANS = {
   meals: {
@@ -1020,8 +1020,8 @@ const PLANS = {
     hint: "Tap a meal to plan it. Saves as you type.", side: "groceries",
   },
   outfits: {
-    view: "#outfitsView", prefix: "outfits:", rows: [["outfit", "Outfit"]], copy: "Copy last week's outfits",
-    hint: "Tap a day to plan your outfit. Saves as you type.", side: "notes", weather: true,
+    view: "#outfitsView", prefix: "outfits:", rows: [["outfit", "Option 1"], ["outfit2", "Option 2"], ["outfit3", "Option 3"]], copy: "Copy last week's outfits",
+    hint: "Plan up to three outfit options a day. Saves as you type.", side: "notes", weather: true,
   },
 };
 const planOf = (kind, wk) => Store.getData(PLANS[kind].prefix + wk, {});

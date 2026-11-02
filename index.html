@@ -1066,7 +1066,7 @@ function renderPlan(kind) {
     ${P.side === "notes" ? `<section class="plan-notes"><h2>Outfit notes</h2><p>Laundry, dry cleaning, things to buy or pull out for the week.</p>
       <textarea data-day="notes" data-field="text" aria-label="Outfit notes" placeholder="—" ${lock ? "readonly" : ""}>${esc(notes)}</textarea></section>` : ""}
     </div>
-    ${P.weather ? `<p class="wx-credit">Weather for Cary, NC · <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a></p>` : ""}`;
+    ${P.weather ? `<p class="wx-credit">Weather for Rolesville, NC · <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a></p>` : ""}`;
   if (P.side === "groceries") view.querySelector(".meal-grid").appendChild($("#groceryPanel"));
   view.querySelectorAll(".meal-row textarea").forEach(grow);
   view.querySelector(".copy-btn").onclick = () => {
@@ -1099,11 +1099,11 @@ document.addEventListener("input", e => {
 });
 
 /* ----- weather (Open-Meteo: free, no account) ----- */
-const WX_URL = "https://api.open-meteo.com/v1/forecast?latitude=35.7915&longitude=-78.7811"
+const WX_URL = "https://api.open-meteo.com/v1/forecast?latitude=35.9232&longitude=-78.4575"
   + "&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max"
   + "&temperature_unit=fahrenheit&timezone=America%2FNew_York&past_days=7&forecast_days=16";
 let weather = null, wxLoading = false;
-try { weather = JSON.parse(localStorage.getItem("myweek:weather") || "null"); } catch (e) {}
+try { weather = JSON.parse(localStorage.getItem("myweek:weather:rolesville") || "null"); } catch (e) {}
 async function loadWeather() {
   if (wxLoading || (weather && Date.now() - weather.at < 60 * 60 * 1000)) return;   // refresh hourly
   wxLoading = true;
@@ -1116,7 +1116,7 @@ async function loadWeather() {
       if (hi != null && lo != null) days[t] = { hi: Math.round(hi), lo: Math.round(lo), rain: rain == null ? null : Math.round(rain) };
     });
     weather = { at: Date.now(), days };
-    try { localStorage.setItem("myweek:weather", JSON.stringify(weather)); } catch (e) {}
+    try { localStorage.setItem("myweek:weather:rolesville", JSON.stringify(weather)); } catch (e) {}
   } catch (e) { /* offline or unavailable — cards just show no weather */ }
   wxLoading = false;
   fillWeather();

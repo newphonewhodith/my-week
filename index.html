@@ -258,29 +258,38 @@ body.tab-plan .cal-only, body.tab-plan .list-view, body.tab-plan .grid-view{disp
 .tabs button{padding:9px 16px}
 @media (max-width:430px){ .tabs{width:100%} .tabs button{flex:1; padding:9px 4px; letter-spacing:.05em; font-size:.7rem} }
 .habit-list{display:grid; gap:10px}
-.habit{background:var(--white); border:1px solid var(--line); border-radius:18px; padding:14px 16px}
-.habit.met{border-color:var(--rose)}
-.habit-head{display:flex; align-items:baseline; gap:10px; margin-bottom:10px}
+@media (min-width:700px){ .habit-list{grid-template-columns:1fr 1fr} .habit-list > .habit:last-child:nth-child(odd){grid-column:span 2} }
+.habit{background:var(--white); border:1px solid var(--line); border-radius:18px; padding:16px; display:flex; flex-direction:column; gap:12px}
+.habit.met{border-color:var(--rose); background:linear-gradient(180deg,#fff5f9 0,#fff 70%)}
+.habit-main{display:flex; align-items:center; gap:14px}
+.ring{position:relative; width:72px; height:72px; flex:none}
+.ring svg{width:100%; height:100%; transform:rotate(-90deg)}
+.ring circle{fill:none; stroke-width:6}
+.ring-bg{stroke:var(--rose-soft)}
+.ring-fg.zero{stroke:transparent}
+.ring-fg{stroke:var(--rose); stroke-linecap:round; stroke-dasharray:169.65; transition:stroke-dashoffset .7s cubic-bezier(.3,.8,.3,1)}
+.ring-num{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:"Cormorant Garamond",Georgia,serif; font-weight:600; font-size:1.5rem; color:var(--rose-deep); line-height:1}
+.ring-num small{font-family:"DM Sans",sans-serif; font-size:.58rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin-top:2px}
+.habit.met .ring-num small{color:var(--rose); font-size:.66rem}
+.habit-info{min-width:0}
 .habit-name{font-family:"Cormorant Garamond",Georgia,serif; font-weight:600; font-size:1.3rem; color:var(--rose-deep); line-height:1.15}
-.habit-goal{font-size:.66rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft)}
+.habit-goal{display:block; font-size:.64rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft); margin-top:2px}
 .habit-note{display:block; font-size:.76rem; color:var(--ink-soft); margin-top:2px}
-.habit-score{margin-left:auto; font-size:.82rem; font-weight:600; color:var(--rose-deep); white-space:nowrap; font-variant-numeric:tabular-nums}
-.habit-score.met{color:var(--white); background:var(--rose); padding:2px 10px; border-radius:99px; font-size:.7rem; letter-spacing:.1em; text-transform:uppercase}
-.habit-days{display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); gap:4px}
-.hday{display:flex; flex-direction:column; align-items:center; gap:6px; padding:6px 0; border-radius:12px}
-.hday.today{background:var(--rose-soft)}
-.hday small{font-size:.62rem; font-weight:600; letter-spacing:.1em; color:var(--ink-soft)}
-.hday.today small{color:var(--rose-deep)}
-.hdots{display:flex; flex-direction:column; gap:6px}
-.hdot{width:28px; height:28px; border-radius:50%; border:1.5px solid var(--rose); background:var(--white); padding:0; cursor:pointer; position:relative; transition:background .15s}
-.hdots.two .hdot{width:24px; height:24px}
-.hdot.on{background:var(--rose)}
-.hdot.on::after{content:""; position:absolute; left:50%; top:45%; width:5px; height:10px; border:solid var(--white); border-width:0 2px 2px 0; transform:translate(-50%,-50%) rotate(45deg)}
-.hdots.two .hdot.on::after{width:4px; height:8px}
-.hdot:disabled{cursor:default; opacity:.35}
-.hdot:focus-visible{outline:2px solid var(--rose); outline-offset:2px}
-.habit-bar{height:3px; border-radius:99px; background:var(--rose-soft); overflow:hidden; margin-top:10px}
-.habit-bar span{display:block; height:100%; background:var(--rose); transition:width .3s}
+.habit-met{display:inline-block; margin-top:6px; background:var(--rose); color:var(--white); font-size:.62rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase; padding:3px 10px; border-radius:99px}
+.habit-days-done{display:block; font-size:.78rem; color:var(--rose); font-weight:600; margin-top:5px}
+.habit-actions{display:flex; gap:8px}
+.habit-actions:empty{display:none}
+.hbtn{flex:1; border:1px solid var(--rose); background:var(--white); color:var(--rose); border-radius:999px; padding:10px 12px; font-weight:600; font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; transition:background .15s, color .15s}
+.hbtn.on{background:var(--rose); color:var(--white)}
+.hbtn:active{transform:scale(.97)}
+.hedit{align-self:flex-start; border:0; background:none; color:var(--ink-soft); font-size:.72rem; font-weight:600; letter-spacing:.06em; padding:0; cursor:pointer; text-decoration:underline; text-underline-offset:3px}
+.hchips{display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); gap:5px}
+.hchip{position:relative; border:1px solid var(--line); background:var(--white); color:var(--ink-soft); border-radius:10px; padding:8px 0; font-weight:600; font-size:.74rem; cursor:pointer}
+.hchip.on{background:var(--rose); border-color:var(--rose); color:var(--white)}
+.hchip.half{background:var(--rose-soft); border-color:var(--rose); color:var(--rose-deep)}
+.hchip i{font-style:normal; font-size:.6rem; margin-left:2px; opacity:.85}
+.hchip:disabled{opacity:.35; cursor:default}
+.hbtn:focus-visible, .hchip:focus-visible, .hedit:focus-visible{outline:2px solid var(--rose); outline-offset:2px}
 .habits-summary{font-size:.82rem; color:var(--ink-soft); margin:0}
 .habits-summary b{color:var(--rose-deep)}
 .body-log{background:var(--white); border:1px solid var(--line); border-radius:18px; padding:14px 16px; margin-bottom:10px}
@@ -1101,11 +1110,6 @@ function renderMeals() { for (const kind of Object.keys(PLANS)) renderPlan(kind)
 /* ----- habit tracker: saved per week as "habits:<Monday>" → { habitId: { mon: count, … } } (synced) ----- */
 const habitsFor = wk => HABITS.filter(h => !h.from || h.from <= wk);
 const habitLog = wk => Store.getData("habits:" + wk, {});
-function habitScore(h, log) {
-  const days = log[h.id] || {};
-  if (h.perWeek) { const n = DAY_KEYS.filter(dk => days[dk] > 0).length; return { n, goal: h.perWeek }; }
-  return { n: DAY_KEYS.reduce((a, dk) => a + Math.min(days[dk] || 0, h.perDay), 0), goal: h.perDay * 7 };
-}
 function renderHabits() {
   const view = $("#habitsView");
   view.hidden = activeTab !== "habits";
@@ -1114,26 +1118,80 @@ function renderHabits() {
   const met = list.filter(h => { const s = habitScore(h, log); return s.n >= s.goal; }).length;
   if (!$("#habitArea")) view.innerHTML = `<section class="body-log" id="bodyLog"></section><div id="habitArea"></div>`;
   renderBody();
-  $("#habitArea").innerHTML = `
-    <div class="meals-top"><p class="habits-summary">${lock ? "Past week · view only · " : ""}<b>${met} of ${list.length}</b> goals met this week</p></div>
+  const isThisWeek = wk === currentMonKey(), todayDk = DAY_KEYS[(new Date().getDay() + 6) % 7];
+  const area = $("#habitArea");
+  const prevPct = {};
+  area.querySelectorAll("[data-ring]").forEach(c => (prevPct[c.dataset.ring] = Number(c.dataset.pct)));
+  area.innerHTML = `
+    <div class="meals-top"><p class="habits-summary">${lock ? "Past week · view only · " : ""}<b>${met} of ${list.length}</b> goals met${isThisWeek ? " this week" : ""}</p></div>
     <div class="habit-list">${list.length ? list.map(h => {
-      const s = habitScore(h, log), done = s.n >= s.goal, per = h.perDay || 1;
-      const goalText = h.perWeek ? `${h.perWeek}× a week` : h.perDay > 1 ? `${h.perDay}× a day` : "Daily";
+      const s = habitScore(h, log), done = s.n >= s.goal, per = h.perDay || 1, days = log[h.id] || {};
+      const pct = Math.min(1, s.n / s.goal);
+      const goalText = h.perWeek ? `${h.perWeek}× a week` : h.perDay > 1 ? "Morning & night" : "Every day";
+      const logged = DAY_KEYS.filter(dk => (days[dk] || 0) > 0).map(dk => DAY_NAMES[DAY_KEYS.indexOf(dk)].slice(0, 3));
+      const v = days[todayDk] || 0;
+      const actions = !isThisWeek || lock ? "" : per > 1
+        ? `<button class="hbtn ${v & 1 ? "on" : ""}" data-hab="${h.id}" data-bit="1" aria-pressed="${!!(v & 1)}">Morning</button>
+           <button class="hbtn ${v & 2 ? "on" : ""}" data-hab="${h.id}" data-bit="2" aria-pressed="${!!(v & 2)}">Night</button>`
+        : `<button class="hbtn wide ${v ? "on" : ""}" data-hab="${h.id}" data-bit="1" aria-pressed="${!!v}">${v ? "Done today" : h.perWeek ? "Done today" : "Done"}</button>`;
+      const open = habitEditOpen.has(h.id) && !lock;
+      const chips = open ? `<div class="hchips">${DAY_KEYS.map((dk, i) => {
+          const key = keyOf(addDays(viewMonday, i)), n = bits(days[dk] || 0);
+          return `<button class="hchip ${n ? "on" : ""} ${n && n < per ? "half" : ""}" data-chip="${h.id}" data-day="${dk}" ${key > todayKey ? "disabled" : ""}
+            aria-label="${esc(h.name)}, ${DAY_NAMES[i]}: ${n} of ${per}">${DAY_NAMES[i].slice(0, 1)}${per > 1 && n ? `<i>${n}</i>` : ""}</button>`;
+        }).join("")}</div>` : "";
       return `<article class="habit ${done ? "met" : ""}">
-        <div class="habit-head"><div><div class="habit-name">${esc(h.name)}</div>
-          <span class="habit-goal">${goalText}</span>${h.note ? `<span class="habit-note">${esc(h.note)}</span>` : ""}</div>
-          <span class="habit-score ${done ? "met" : ""}">${done ? "Goal met" : `${s.n} / ${s.goal}`}</span></div>
-        <div class="habit-days">${DAY_KEYS.map((dk, i) => {
-          const key = keyOf(addDays(viewMonday, i)), n = (log[h.id] || {})[dk] || 0, future = key > todayKey;
-          const dots = Array.from({ length: per }, (_, j) =>
-            `<button class="hdot ${n > j ? "on" : ""}" data-habit="${h.id}" data-day="${dk}" data-i="${j}" ${lock || future ? "disabled" : ""}
-              aria-pressed="${n > j}" aria-label="${esc(h.name)}, ${DAY_NAMES[i]}${per > 1 ? `, ${j === 0 ? "morning" : "night"}` : ""}"></button>`).join("");
-          return `<div class="hday ${key === todayKey ? "today" : ""}"><small>${DAY_NAMES[i].slice(0, 1)}</small><div class="hdots ${per > 1 ? "two" : ""}">${dots}</div></div>`;
-        }).join("")}</div>
-        <div class="habit-bar"><span style="width:${Math.min(100, s.n / s.goal * 100)}%"></span></div>
+        <div class="habit-main">
+          <div class="ring" role="img" aria-label="${s.n} of ${s.goal}">
+            <svg viewBox="0 0 64 64"><circle class="ring-bg" cx="32" cy="32" r="27"/>
+              <circle class="ring-fg ${pct === 0 && !prevPct[h.id] ? "zero" : ""}" cx="32" cy="32" r="27" data-ring="${h.id}" data-pct="${pct}"
+                style="stroke-dashoffset:${RING * (1 - (prevPct[h.id] ?? pct))}"/></svg>
+            <span class="ring-num">${done ? "" : s.n}<small>${done ? "Done" : "of " + s.goal}</small></span>
+          </div>
+          <div class="habit-info"><div class="habit-name">${esc(h.name)}</div>
+            <span class="habit-goal">${goalText}</span>${h.note ? `<span class="habit-note">${esc(h.note)}</span>` : ""}
+            ${done ? `<span class="habit-met">Goal met</span>` : h.perWeek && logged.length ? `<span class="habit-days-done">${logged.join(" · ")}</span>` : ""}</div>
+        </div>
+        ${actions || (!lock && isThisWeek) ? `<div class="habit-actions">${actions}</div>` : ""}
+        ${lock ? "" : `<button class="hedit" data-edit="${h.id}">${open ? "Close" : "Edit days"}</button>`}
+        ${chips}
       </article>`;
-    }).join("") : `<p class="empty">No habits for this week.</p>`}</div>`;
+    }).join("") : `<p class="empty">${wk < "2026-11-09" ? "Habit tracking starts the week of Nov 9." : "No habits for this week."}</p>`}</div>`;
+  requestAnimationFrame(() => requestAnimationFrame(() =>
+    area.querySelectorAll("[data-ring]").forEach(c => {
+      c.style.strokeDashoffset = RING * (1 - Number(c.dataset.pct));
+      if (Number(c.dataset.pct) === 0) setTimeout(() => c.classList.add("zero"), 700);   // hide the cap once emptied
+    })));
 }
+const RING = 2 * Math.PI * 27;
+const habitEditOpen = new Set();
+// Each day's value: 1 = done (or morning), 2 = night, 3 = both
+const bits = v => (v & 1) + ((v >> 1) & 1);
+function habitScore(h, log) {
+  const days = log[h.id] || {};
+  if (h.perWeek) { const n = DAY_KEYS.filter(dk => (days[dk] || 0) > 0).length; return { n, goal: h.perWeek }; }
+  return { n: DAY_KEYS.reduce((a, dk) => a + Math.min(bits(days[dk] || 0), h.perDay), 0), goal: h.perDay * 7 };
+}
+function setHabit(id, dk, fn) {
+  const wk = viewKey(), all = JSON.parse(JSON.stringify(habitLog(wk)));
+  const h = all[id] = all[id] || {};
+  h[dk] = fn(h[dk] || 0);
+  if (!h[dk]) delete h[dk];
+  Store.setData("habits:" + wk, all);
+  renderHabits();
+}
+document.addEventListener("click", e => {
+  const t = e.target.closest(".hbtn, .hchip, .hedit");
+  if (!t || t.disabled || locked()) return;
+  if (t.matches(".hedit")) { const id = t.dataset.edit; habitEditOpen.has(id) ? habitEditOpen.delete(id) : habitEditOpen.add(id); return renderHabits(); }
+  if (t.matches(".hbtn")) {
+    const bit = Number(t.dataset.bit), todayDk = DAY_KEYS[(new Date().getDay() + 6) % 7];
+    return setHabit(t.dataset.hab, todayDk, v => v ^ bit);
+  }
+  const h = HABITS.find(x => x.id === t.dataset.chip);
+  setHabit(h.id, t.dataset.day, v => (h.perDay > 1 ? (v === 0 ? 1 : v === 3 ? 0 : 3) : v ? 0 : 1));   // 2× a day: none → one → both → none
+});
+
 /* ----- body log: weight per day ("body:<Monday>" → { weight: { mon: "142.4" } })
          and period start dates ("cycle:starts" → ["YYYY-MM-DD", …]); cycle day is counted from the latest start ----- */
 const bodyOf = wk => Store.getData("body:" + wk, {});
@@ -1220,16 +1278,6 @@ document.addEventListener("input", e => {
   }, 600);
 });
 
-document.addEventListener("click", e => {
-  const b = e.target.closest(".hdot");
-  if (!b || b.disabled || locked()) return;
-  const wk = viewKey(), all = JSON.parse(JSON.stringify(habitLog(wk)));
-  const h = all[b.dataset.habit] = all[b.dataset.habit] || {};
-  const i = Number(b.dataset.i), n = h[b.dataset.day] || 0;
-  h[b.dataset.day] = n > i ? i : i + 1;          // tap a filled dot to undo it (and any after it)
-  Store.setData("habits:" + wk, all);
-  renderHabits();
-});
 function renderPlan(kind) {
   const P = PLANS[kind], view = $(P.view);
   view.hidden = activeTab !== kind;

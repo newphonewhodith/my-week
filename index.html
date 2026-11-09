@@ -174,6 +174,19 @@ const STARTER_TODOS = [
 
 // GROCERY LIST — same idea: checked items clear at midnight.
 const STARTER_GROCERIES = [];
+
+/* HABITS — shown on the Habits tab.
+   perDay: checks each day (e.g. 2 = morning & night) · perWeek: days a week to aim for
+   from: the first week (a Monday) a habit appears, so past weeks keep the habits you had then. */
+const HABITS = [
+  { id: "teeth",   name: "Brush teeth",            perDay: 2, from: "2026-11-02" },
+  { id: "face",    name: "Wash face",              perDay: 2, from: "2026-11-02" },
+  { id: "meals",   name: "Track all meals",        perDay: 1, from: "2026-11-02" },
+  { id: "lift",    name: "Lift weights",           perWeek: 4, from: "2026-11-02" },
+  { id: "walk",    name: "Walk",                   perWeek: 5, from: "2026-11-02" },
+  { id: "sermon",  name: "Listen to church sermon", perWeek: 1, from: "2026-11-02" },
+  { id: "social",  name: "Social time",            perWeek: 2, from: "2026-11-02", note: "Work outside the house or see friends" },
+];
 /* ===================== end of calendar data ===================== */
 </script>
 
@@ -242,7 +255,34 @@ button{font:inherit; color:inherit}
 .tabs button{border:0; background:none; border-radius:999px; padding:9px 22px; font-weight:600; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); cursor:pointer}
 .tabs button[aria-selected=true]{background:var(--rose); color:var(--white)}
 body.tab-plan .cal-only, body.tab-plan .list-view, body.tab-plan .grid-view{display:none !important}
-.tabs button{padding:9px 18px}
+.tabs button{padding:9px 16px}
+@media (max-width:430px){ .tabs{width:100%} .tabs button{flex:1; padding:9px 4px; letter-spacing:.05em; font-size:.7rem} }
+.habit-list{display:grid; gap:10px}
+.habit{background:var(--white); border:1px solid var(--line); border-radius:18px; padding:14px 16px}
+.habit.met{border-color:var(--rose)}
+.habit-head{display:flex; align-items:baseline; gap:10px; margin-bottom:10px}
+.habit-name{font-family:"Cormorant Garamond",Georgia,serif; font-weight:600; font-size:1.3rem; color:var(--rose-deep); line-height:1.15}
+.habit-goal{font-size:.66rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft)}
+.habit-note{display:block; font-size:.76rem; color:var(--ink-soft); margin-top:2px}
+.habit-score{margin-left:auto; font-size:.82rem; font-weight:600; color:var(--rose-deep); white-space:nowrap; font-variant-numeric:tabular-nums}
+.habit-score.met{color:var(--white); background:var(--rose); padding:2px 10px; border-radius:99px; font-size:.7rem; letter-spacing:.1em; text-transform:uppercase}
+.habit-days{display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); gap:4px}
+.hday{display:flex; flex-direction:column; align-items:center; gap:6px; padding:6px 0; border-radius:12px}
+.hday.today{background:var(--rose-soft)}
+.hday small{font-size:.62rem; font-weight:600; letter-spacing:.1em; color:var(--ink-soft)}
+.hday.today small{color:var(--rose-deep)}
+.hdots{display:flex; flex-direction:column; gap:6px}
+.hdot{width:28px; height:28px; border-radius:50%; border:1.5px solid var(--rose); background:var(--white); padding:0; cursor:pointer; position:relative; transition:background .15s}
+.hdots.two .hdot{width:24px; height:24px}
+.hdot.on{background:var(--rose)}
+.hdot.on::after{content:""; position:absolute; left:50%; top:45%; width:5px; height:10px; border:solid var(--white); border-width:0 2px 2px 0; transform:translate(-50%,-50%) rotate(45deg)}
+.hdots.two .hdot.on::after{width:4px; height:8px}
+.hdot:disabled{cursor:default; opacity:.35}
+.hdot:focus-visible{outline:2px solid var(--rose); outline-offset:2px}
+.habit-bar{height:3px; border-radius:99px; background:var(--rose-soft); overflow:hidden; margin-top:10px}
+.habit-bar span{display:block; height:100%; background:var(--rose); transition:width .3s}
+.habits-summary{font-size:.82rem; color:var(--ink-soft); margin:0}
+.habits-summary b{color:var(--rose-deep)}
 .meal-day .day-head{flex-wrap:wrap}
 .wx{margin-left:auto; font-size:.74rem; color:var(--ink-soft); white-space:nowrap; font-variant-numeric:tabular-nums}
 .wx b{color:var(--rose-deep); font-weight:600}
@@ -485,6 +525,7 @@ footer{height:calc(24px + env(safe-area-inset-bottom))}
     <button role="tab" data-tab="calendar" aria-selected="true">Calendar</button>
     <button role="tab" data-tab="meals" aria-selected="false">Meals</button>
     <button role="tab" data-tab="outfits" aria-selected="false">Outfits</button>
+    <button role="tab" data-tab="habits" aria-selected="false">Habits</button>
   </div>
   <div class="progress cal-only"><div class="bar"><span id="progressFill"></span></div><span id="progressText"></span></div>
   <div class="legend cal-only" id="legend"></div>
@@ -494,6 +535,7 @@ footer{height:calc(24px + env(safe-area-inset-bottom))}
     <section class="grid-view" id="gridView" aria-label="Week view"></section>
     <section class="meals-view" id="mealsView" aria-label="Meal plan" hidden></section>
     <section class="meals-view" id="outfitsView" aria-label="Outfit plan" hidden></section>
+    <section class="meals-view" id="habitsView" aria-label="Habit tracker" hidden></section>
   </main>
 
  </div>
@@ -1028,9 +1070,54 @@ const planOf = (kind, wk) => Store.getData(PLANS[kind].prefix + wk, {});
 const hasPlan = m => Object.values(m || {}).some(d => d && Object.values(d).some(v => v && String(v).trim()));
 let activeTab = "calendar";
 try { activeTab = localStorage.getItem("myweek:tab") || "calendar"; } catch (e) {}
-if (!["calendar", "meals", "outfits"].includes(activeTab)) activeTab = "calendar";
+if (!["calendar", "meals", "outfits", "habits"].includes(activeTab)) activeTab = "calendar";
 
-function renderMeals() { for (const kind of Object.keys(PLANS)) renderPlan(kind); }
+function renderMeals() { for (const kind of Object.keys(PLANS)) renderPlan(kind); renderHabits(); }
+
+/* ----- habit tracker: saved per week as "habits:<Monday>" → { habitId: { mon: count, … } } (synced) ----- */
+const habitsFor = wk => HABITS.filter(h => !h.from || h.from <= wk);
+const habitLog = wk => Store.getData("habits:" + wk, {});
+function habitScore(h, log) {
+  const days = log[h.id] || {};
+  if (h.perWeek) { const n = DAY_KEYS.filter(dk => days[dk] > 0).length; return { n, goal: h.perWeek }; }
+  return { n: DAY_KEYS.reduce((a, dk) => a + Math.min(days[dk] || 0, h.perDay), 0), goal: h.perDay * 7 };
+}
+function renderHabits() {
+  const view = $("#habitsView");
+  view.hidden = activeTab !== "habits";
+  if (activeTab !== "habits") return;
+  const wk = viewKey(), log = habitLog(wk), lock = locked(), list = habitsFor(wk);
+  const met = list.filter(h => { const s = habitScore(h, log); return s.n >= s.goal; }).length;
+  view.innerHTML = `
+    <div class="meals-top"><p class="habits-summary">${lock ? "Past week · view only · " : ""}<b>${met} of ${list.length}</b> goals met this week</p></div>
+    <div class="habit-list">${list.length ? list.map(h => {
+      const s = habitScore(h, log), done = s.n >= s.goal, per = h.perDay || 1;
+      const goalText = h.perWeek ? `${h.perWeek}× a week` : h.perDay > 1 ? `${h.perDay}× a day` : "Daily";
+      return `<article class="habit ${done ? "met" : ""}">
+        <div class="habit-head"><div><div class="habit-name">${esc(h.name)}</div>
+          <span class="habit-goal">${goalText}</span>${h.note ? `<span class="habit-note">${esc(h.note)}</span>` : ""}</div>
+          <span class="habit-score ${done ? "met" : ""}">${done ? "Goal met" : `${s.n} / ${s.goal}`}</span></div>
+        <div class="habit-days">${DAY_KEYS.map((dk, i) => {
+          const key = keyOf(addDays(viewMonday, i)), n = (log[h.id] || {})[dk] || 0, future = key > todayKey;
+          const dots = Array.from({ length: per }, (_, j) =>
+            `<button class="hdot ${n > j ? "on" : ""}" data-habit="${h.id}" data-day="${dk}" data-i="${j}" ${lock || future ? "disabled" : ""}
+              aria-pressed="${n > j}" aria-label="${esc(h.name)}, ${DAY_NAMES[i]}${per > 1 ? `, ${j === 0 ? "morning" : "night"}` : ""}"></button>`).join("");
+          return `<div class="hday ${key === todayKey ? "today" : ""}"><small>${DAY_NAMES[i].slice(0, 1)}</small><div class="hdots ${per > 1 ? "two" : ""}">${dots}</div></div>`;
+        }).join("")}</div>
+        <div class="habit-bar"><span style="width:${Math.min(100, s.n / s.goal * 100)}%"></span></div>
+      </article>`;
+    }).join("") : `<p class="empty">No habits for this week.</p>`}</div>`;
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest(".hdot");
+  if (!b || b.disabled || locked()) return;
+  const wk = viewKey(), all = JSON.parse(JSON.stringify(habitLog(wk)));
+  const h = all[b.dataset.habit] = all[b.dataset.habit] || {};
+  const i = Number(b.dataset.i), n = h[b.dataset.day] || 0;
+  h[b.dataset.day] = n > i ? i : i + 1;          // tap a filled dot to undo it (and any after it)
+  Store.setData("habits:" + wk, all);
+  renderHabits();
+});
 function renderPlan(kind) {
   const P = PLANS[kind], view = $(P.view);
   view.hidden = activeTab !== kind;

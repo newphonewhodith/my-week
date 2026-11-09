@@ -283,6 +283,30 @@ body.tab-plan .cal-only, body.tab-plan .list-view, body.tab-plan .grid-view{disp
 .habit-bar span{display:block; height:100%; background:var(--rose); transition:width .3s}
 .habits-summary{font-size:.82rem; color:var(--ink-soft); margin:0}
 .habits-summary b{color:var(--rose-deep)}
+.body-log{background:var(--white); border:1px solid var(--line); border-radius:18px; padding:14px 16px; margin-bottom:10px}
+.body-sum{margin-left:auto; font-size:.8rem; color:var(--ink-soft); text-align:right}
+.body-sum b{color:var(--rose-deep); font-weight:600}
+.body-rows{display:grid}
+.body-row{display:grid; grid-template-columns:1fr 120px 128px; align-items:center; gap:10px; padding:6px 8px; border-bottom:1px solid var(--line); border-radius:10px}
+.body-row:last-child{border-bottom:0}
+.body-row.today{background:var(--rose-soft)}
+.body-labels{padding-top:0; padding-bottom:4px}
+.body-labels span{font-size:.62rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft)}
+.body-day{font-weight:600; font-size:.9rem}
+.body-day small{font-weight:400; color:var(--ink-soft); font-size:.78rem; margin-left:4px}
+.weight{display:flex; align-items:center; gap:6px}
+.weight input{width:76px; border:1px solid var(--line); border-radius:10px; padding:7px 9px; background:var(--blush); font:400 16px "DM Sans",sans-serif; color:var(--ink); font-variant-numeric:tabular-nums}
+.weight input:focus{outline:none; border-color:var(--rose); background:var(--white)}
+.weight input[readonly]{background:transparent; border-color:transparent; color:var(--ink-soft)}
+.weight em{font-style:normal; font-size:.74rem; color:var(--ink-soft)}
+.cycle{display:flex; align-items:center; justify-content:space-between; gap:8px}
+.cday{font-size:.88rem; font-weight:600; color:var(--rose-deep); font-variant-numeric:tabular-nums; white-space:nowrap}
+.cstart{border:1px solid var(--rose); background:var(--white); color:var(--rose); border-radius:999px; padding:5px 10px; font-size:.68rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; cursor:pointer; white-space:nowrap}
+.cstart.on{background:var(--rose); color:var(--white)}
+.cstart:disabled{opacity:.3; cursor:default}
+.cycle-add{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:10px; font-size:.78rem; color:var(--ink-soft)}
+.cycle-add input{border:1px solid var(--line); border-radius:10px; padding:6px 8px; background:var(--blush); font:400 16px "DM Sans",sans-serif; color:var(--ink)}
+@media (max-width:430px){ .body-row{grid-template-columns:1fr 104px 108px; gap:6px; padding:6px 4px} .body-day small{display:none} .weight input{width:76px; padding:7px 6px} .weight{gap:4px} .cstart{padding:5px 8px} }
 .meal-day .day-head{flex-wrap:wrap}
 .wx{margin-left:auto; font-size:.74rem; color:var(--ink-soft); white-space:nowrap; font-variant-numeric:tabular-nums}
 .wx b{color:var(--rose-deep); font-weight:600}
@@ -1088,7 +1112,9 @@ function renderHabits() {
   if (activeTab !== "habits") return;
   const wk = viewKey(), log = habitLog(wk), lock = locked(), list = habitsFor(wk);
   const met = list.filter(h => { const s = habitScore(h, log); return s.n >= s.goal; }).length;
-  view.innerHTML = `
+  if (!$("#habitArea")) view.innerHTML = `<section class="body-log" id="bodyLog"></section><div id="habitArea"></div>`;
+  renderBody();
+  $("#habitArea").innerHTML = `
     <div class="meals-top"><p class="habits-summary">${lock ? "Past week · view only · " : ""}<b>${met} of ${list.length}</b> goals met this week</p></div>
     <div class="habit-list">${list.length ? list.map(h => {
       const s = habitScore(h, log), done = s.n >= s.goal, per = h.perDay || 1;
@@ -1108,6 +1134,92 @@ function renderHabits() {
       </article>`;
     }).join("") : `<p class="empty">No habits for this week.</p>`}</div>`;
 }
+/* ----- body log: weight per day ("body:<Monday>" → { weight: { mon: "142.4" } })
+         and period start dates ("cycle:starts" → ["YYYY-MM-DD", …]); cycle day is counted from the latest start ----- */
+const bodyOf = wk => Store.getData("body:" + wk, {});
+const cycleStarts = () => Store.getData("cycle:starts", []).slice().sort();
+const daysBetween = (a, b) => Math.round((parseKey(b) - parseKey(a)) / 86400000);
+function cycleDay(key) {
+  const start = cycleStarts().filter(d => d <= key).pop();
+  return start ? daysBetween(start, key) + 1 : null;
+}
+function avgWeight(wk) {
+  const v = Object.values(bodyOf(wk).weight || {}).map(parseFloat).filter(n => n > 0);
+  return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
+}
+function renderBody() {
+  const box = $("#bodyLog"), wk = viewKey(), lock = locked(), body = bodyOf(wk), w = body.weight || {};
+  const avg = avgWeight(wk), prev = avgWeight(keyOf(addDays(viewMonday, -7)));
+  const summary = avg == null ? "" : `Avg <b>${avg.toFixed(1)} lb</b>` + (prev == null ? "" :
+    ` · ${avg - prev > 0 ? "+" : avg - prev < 0 ? "−" : "±"}${Math.abs(avg - prev).toFixed(1)} from last week`);
+  const starts = cycleStarts();
+  const sig = [wk, lock, todayKey].join("|");
+  if (box.dataset.sig === sig) {                       // same week on screen: refresh in place, keep what you're typing
+    box.querySelectorAll("input[data-weight]").forEach(i => { if (i !== document.activeElement) i.value = w[i.dataset.weight] || ""; });
+    fillCycle(box, starts, lock);
+    box.querySelector(".body-sum").innerHTML = summary;
+    return;
+  }
+  box.dataset.sig = sig;
+  box.innerHTML = `
+    <div class="habit-head"><div><div class="habit-name">Body</div><span class="habit-goal">Weight & cycle day</span></div>
+      <span class="body-sum">${summary}</span></div>
+    <div class="body-rows">
+      <div class="body-row body-labels"><span></span><span>Weight</span><span>Cycle</span></div>
+      ${DAY_KEYS.map((dk, i) => {
+        const d = addDays(viewMonday, i), key = keyOf(d), future = key > todayKey;
+        return `<div class="body-row ${key === todayKey ? "today" : ""}">
+          <span class="body-day">${DAY_NAMES[i].slice(0, 3)} <small>${MONTHS[d.getMonth()]} ${d.getDate()}</small></span>
+          <label class="weight"><input type="text" inputmode="decimal" data-weight="${dk}" value="${esc(w[dk] || "")}" placeholder="—"
+            aria-label="Weight on ${DAY_NAMES[i]}" ${lock || future ? "readonly" : ""}><em>lb</em></label>
+          <span class="cycle"><span class="cday" data-cday="${key}"></span>
+            <button class="cstart" data-start="${key}" ${lock || future ? "disabled" : ""}>Start</button></span>
+        </div>`;
+      }).join("")}
+    </div>
+    ${lock ? "" : `<label class="cycle-add">Period started earlier? <input type="date" id="cycleDate" max="${todayKey}" aria-label="Add a period start date"></label>`}`;
+  fillCycle(box, starts, lock);
+}
+function fillCycle(box, starts, lock) {
+  box.querySelectorAll("[data-cday]").forEach(el => { const n = cycleDay(el.dataset.cday); el.textContent = n ? "Day " + n : "—"; });
+  box.querySelectorAll("[data-start]").forEach(b => {
+    const on = starts.includes(b.dataset.start);
+    b.classList.toggle("on", on); b.textContent = on ? "Day 1" : "Start";
+    b.setAttribute("aria-pressed", on); b.setAttribute("aria-label", on ? "Period started this day (tap to undo)" : "Period started this day");
+  });
+}
+const toggleStart = key => {
+  const set = new Set(cycleStarts());
+  set.has(key) ? set.delete(key) : set.add(key);
+  Store.setData("cycle:starts", [...set].sort());
+  renderBody();
+};
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-start]");
+  if (b && !b.disabled && !locked()) toggleStart(b.dataset.start);
+});
+document.addEventListener("change", e => {
+  if (e.target.id !== "cycleDate" || !e.target.value || locked()) return;
+  const set = new Set(cycleStarts()); set.add(e.target.value);
+  Store.setData("cycle:starts", [...set].sort());
+  e.target.value = ""; renderBody();
+});
+let weightTimer;
+document.addEventListener("input", e => {
+  const t = e.target;
+  if (!t.matches("input[data-weight]") || locked()) return;
+  t.value = t.value.replace(/[^0-9.]/g, "").replace(/(\..*)\./g, "$1");
+  const wk = viewKey();
+  clearTimeout(weightTimer);
+  weightTimer = setTimeout(() => {
+    const all = JSON.parse(JSON.stringify(bodyOf(wk)));
+    all.weight = all.weight || {};
+    $("#bodyLog").querySelectorAll("input[data-weight]").forEach(i => { all.weight[i.dataset.weight] = i.value; });
+    Store.setData("body:" + wk, all);
+    renderBody();
+  }, 600);
+});
+
 document.addEventListener("click", e => {
   const b = e.target.closest(".hdot");
   if (!b || b.disabled || locked()) return;
